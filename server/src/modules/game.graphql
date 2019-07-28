@@ -1,0 +1,18 @@
+type Query {
+    games: [Game]!
+    game(id: ID!): Game
+}
+
+type Mutation {
+    createGame: Game
+}
+
+type Game {
+    _id: ID!
+    code: String!
+    registrations: [Registration]
+}
+
+type Registration {
+    player: Player
+}

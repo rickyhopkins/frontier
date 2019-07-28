@@ -1,0 +1,13 @@
+extend type Query {
+    players: [Player]!
+    player(id: ID!): Player
+}
+
+extend type Mutation {
+    createPlayer(name: String!): String
+}
+
+type Player {
+    _id: ID!
+    name: String
+}
