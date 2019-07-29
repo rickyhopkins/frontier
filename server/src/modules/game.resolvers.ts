@@ -55,4 +55,4 @@ export default {
             return Player.findById(player);
         },
     },
-};
+} as any;
