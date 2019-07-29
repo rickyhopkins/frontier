@@ -20,7 +20,10 @@ ObjectId.prototype.valueOf = function() {
 
 const server = new ApolloServer({
     modules: [AppModule],
-    cors: true,
+    cors: {
+        origin: '*',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    },
     context: ({ req, connection }: any) => {
         const { authorization: token = '' } =
             (req && req.headers) || connection.context;
