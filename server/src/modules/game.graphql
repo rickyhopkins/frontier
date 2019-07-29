@@ -1,9 +1,13 @@
-type Query {
+extend type Subscription {
+    gameAdded: Game
+}
+
+extend type Query {
     games: [Game]!
     game(id: ID!): Game
 }
 
-type Mutation {
+extend type Mutation {
     createGame: Game
 }
 

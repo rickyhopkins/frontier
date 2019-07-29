@@ -4,11 +4,10 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 import { Login } from '../pages/Login';
 import jwt_decode from 'jwt-decode';
 
+export const USER_TOKEN_KEY = 'frontier_user_token';
+
 export const AuthenticationWrapper: FC = ({ children }) => {
-    const [token, setToken, loading] = useLocalStorage(
-        'frontier_user_token',
-        ''
-    );
+    const [token, setToken, loading] = useLocalStorage(USER_TOKEN_KEY, '');
 
     const [user, setUser] = useState();
 

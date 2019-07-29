@@ -3,13 +3,21 @@ import { AppLayout, Globals, Logo } from './App.styles';
 import logo from './assets/images/frontier-logo-type.svg';
 import { ApolloProvider } from 'react-apollo-hooks';
 import { Router } from './Router';
-import { AuthenticationWrapper } from './contexts/AuthenticationWrapper';
+import {
+    AuthenticationWrapper,
+    USER_TOKEN_KEY,
+} from './contexts/AuthenticationWrapper';
 import { getMainDefinition } from 'apollo-utilities';
 import { WebSocketLink } from 'apollo-link-ws';
 import { ApolloLink, from, split } from 'apollo-link';
 import { HttpLink } from 'apollo-link-http';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+
+const getUserToken = () => {
+    const rawToken = localStorage.getItem(USER_TOKEN_KEY);
+    return rawToken && JSON.parse(rawToken);
+};
 
 const httpBase = new HttpLink({
     uri: `http${process.env.NODE_ENV === 'production' ? 's' : ''}://${
@@ -24,9 +32,7 @@ const wsBase = new WebSocketLink({
     options: {
         reconnect: true,
         connectionParams: {
-            authorization:
-                JSON.parse(localStorage.getItem('frontier_user_token') || '') ||
-                null,
+            authorization: getUserToken(),
         },
     },
 });
@@ -36,9 +42,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
     operation.setContext(({ headers = {} }: any) => ({
         headers: {
             ...headers,
-            authorization:
-                JSON.parse(localStorage.getItem('frontier_user_token') || '') ||
-                null,
+            authorization: getUserToken(),
         },
     }));
 

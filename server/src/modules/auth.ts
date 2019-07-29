@@ -1,7 +1,5 @@
 import { GraphQLModule } from '@graphql-modules/core';
 import * as typeDefs from './auth.graphql';
-import { verify } from 'jsonwebtoken';
-import { resolversComposition } from '@modules/resolvers';
 
 export const AuthModule = new GraphQLModule({
     name: 'auth',

@@ -1,5 +1,4 @@
 import { model, Schema } from 'mongoose';
-import { playerSchema } from './playerSchema';
 import { registrationSchema } from './registrationSchema';
 
 export const gameSchema = new Schema({

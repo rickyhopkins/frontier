@@ -1,5 +1,9 @@
 import { Game } from '../mongoose/gameSchema';
 import * as crypto from 'crypto';
+import { Player } from '../mongoose/playerSchema';
+import { PubSub } from 'graphql-subscriptions';
+
+const GAME_ADDED = 'GAME_ADDED';
 
 const randomString = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -20,6 +24,13 @@ const randomString = () => {
 };
 
 export default {
+    Subscription: {
+        gameAdded: {
+            subscribe(root, args, { injector }) {
+                return injector.get(PubSub).asyncIterator([GAME_ADDED]);
+            },
+        },
+    },
     Query: {
         async games() {
             return Game.find();
@@ -29,12 +40,19 @@ export default {
         },
     },
     Mutation: {
-        async createGame(parent, args) {
-            return await Game.create({
+        async createGame(parent, args, { injector }, { session }) {
+            const game = await Game.create({
                 ...args,
                 code: randomString(),
-                registrations: [{}],
+                registrations: [{ player: session.user }],
             });
+            injector.get(PubSub).publish(GAME_ADDED, { gameAdded: game });
+            return game;
+        },
+    },
+    Registration: {
+        player: ({ player }) => {
+            return Player.findById(player);
         },
     },
 };

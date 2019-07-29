@@ -1,5 +1,5 @@
 directive @auth on FIELD_DEFINITION
 
-extend type Query {
+type Query {
     me: Player @auth
 }

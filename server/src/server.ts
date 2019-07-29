@@ -1,4 +1,5 @@
 import 'graphql-import-node';
+import 'reflect-metadata';
 import * as mongoose from 'mongoose';
 import { ApolloServer } from 'apollo-server';
 import { verify } from 'jsonwebtoken';
