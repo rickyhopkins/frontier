@@ -1,9 +1,9 @@
 import { GraphQLModule } from '@graphql-modules/core';
-import { AuthModule } from '@modules/auth';
-import { PlayerModule } from '@modules/player';
-import { GameModule } from '@modules/game';
-import { resolversComposition } from '@modules/resolvers';
-import { CommonModule } from '@modules/common';
+import { PlayerModule } from './player';
+import { CommonModule } from './common';
+import { resolversComposition } from './resolvers';
+import { AuthModule } from './auth';
+import { GameModule } from './game';
 
 export const AppModule = new GraphQLModule({
     name: 'app',

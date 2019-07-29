@@ -13,10 +13,7 @@
     "declaration": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "./src",
-    "paths": {
-      "@modules/*": ["./modules/*"]
-    }
+    "baseUrl": "./src"
   },
   "include": ["src/**/*.ts"],
   "files": ["src/server.ts"],

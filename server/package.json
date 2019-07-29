@@ -7,10 +7,10 @@
     "node": "12.7.0"
   },
   "scripts": {
-    "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/server.ts",
+    "dev": "nodemon --exec ts-node src/server.ts",
     "build": "npx tsc",
     "postinstall": "npm run build",
-    "start": "node -r tsconfig-paths/register dist/server",
+    "start": "node dist/server",
     "heroku:deploy": "cd .. && git subtree push --prefix server heroku master"
   },
   "keywords": [],
@@ -32,7 +32,6 @@
     "dotenv": "^8.0.0",
     "nodemon": "^1.19.1",
     "ts-node": "^8.3.0",
-    "tsconfig-paths": "^3.8.0",
     "typescript": "^3.5.3"
   }
 }

@@ -1,9 +1,9 @@
 import 'graphql-import-node';
 import 'reflect-metadata';
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import { ApolloServer } from 'apollo-server';
 import { verify } from 'jsonwebtoken';
-import { AppModule } from '@modules/app';
+import { AppModule } from './modules/app';
 
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
