@@ -27,5 +27,5 @@ export const AuthenticationWrapper: FC = ({ children }) => {
         return <Login setToken={setToken} />;
     }
 
-    return <div>{children}</div>;
+    return <>{children}</>;
 };

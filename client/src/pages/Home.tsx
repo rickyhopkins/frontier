@@ -1,10 +1,9 @@
-import { AppWrapper } from '../App.styles';
-import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import React from 'react';
-import { useMutation } from 'react-apollo-hooks';
 import { Redirect } from 'react-router-dom';
 import gql from 'graphql-tag';
+import { GameSearch } from './Home/GameSearch';
+import { useMutation } from '@apollo/react-hooks';
 
 const CREATE_GAME = gql`
     mutation createGame {
@@ -26,10 +25,7 @@ export const Home = () => {
 
     return (
         <>
-            <AppWrapper>
-                <p>Search for a game</p>
-                <Input />
-            </AppWrapper>
+            <GameSearch />
             <h5>OR</h5>
             <Button onClick={() => createGame()} disabled={loading}>
                 Start a new game

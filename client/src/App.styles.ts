@@ -19,7 +19,8 @@ export const Globals = css`
             text-transform: uppercase;
             letter-spacing: 0.5rem;
             font-weight: 500;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
         }
 
         @media only screen and (max-width: 500px) {
@@ -46,6 +47,12 @@ export const Logo = styled.img`
 
 export const AppLayout = styled.div`
     display: grid;
+    grid-template-columns: 2rem auto 2rem;
+    grid-template-rows: 10rem auto 10rem;
+    grid-template-areas:
+        '. logo .'
+        '. content .'
+        '. footer .';
     min-height: 100vh;
     justify-content: center;
     align-items: center;

@@ -32,11 +32,14 @@ export default {
         },
     },
     Query: {
-        async games() {
+        games() {
             return Game.find();
         },
         game(parent, args) {
             return Game.findById(args.id);
+        },
+        findOpenGame(parent, { code }) {
+            return Game.findOne({ status: 'open', code });
         },
     },
     Mutation: {

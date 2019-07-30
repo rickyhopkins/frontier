@@ -5,6 +5,7 @@ extend type Subscription {
 extend type Query {
     games: [Game]!
     game(id: ID!): Game
+    findOpenGame(code: String!): Game
 }
 
 extend type Mutation {

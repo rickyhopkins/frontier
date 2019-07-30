@@ -7,4 +7,5 @@ export const StyledInput = styled.input`
     padding-left: 1rem;
     background-color: #11232b;
     color: lightgray;
+    margin-bottom: 1rem;
 `;
