@@ -8,9 +8,10 @@
   },
   "scripts": {
     "dev": "nodemon --exec ts-node src/server.ts",
-    "build": "npx tsc",
+    "build": "npx tsc && npm run copy-schemas ",
+    "copy-schemas": "npx cpx src/**/*.graphql dist",
     "postinstall": "npm run build",
-    "start": "node dist/server",
+    "start": "node -r graphql-import-node/register dist/server",
     "heroku:deploy": "cd .. && git subtree push --prefix server heroku master"
   },
   "keywords": [],
@@ -19,6 +20,7 @@
   "dependencies": {
     "@graphql-modules/core": "^0.7.8",
     "apollo-server": "^2.7.2",
+    "cpx": "^1.5.0",
     "graphql": "^14.4.2",
     "graphql-import-node": "0.0.4",
     "jsonwebtoken": "^8.5.1",
