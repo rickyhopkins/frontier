@@ -1,9 +1,13 @@
-import { Game } from '../mongoose/gameSchema';
+import { Game, IGame } from '../mongoose/gameSchema';
 import * as crypto from 'crypto';
 import { Player } from '../mongoose/playerSchema';
-import { PubSub } from 'graphql-subscriptions';
+import { PubSub, withFilter } from 'graphql-subscriptions';
+import { UserInputError } from 'apollo-server';
+import { IRegistration } from '../mongoose/registrationSchema';
+import { ITiles } from '../mongoose/tilesSchema';
 
 const GAME_ADDED = 'GAME_ADDED';
+const GAME_UPDATED = 'GAME_UPDATED';
 
 const randomString = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -23,6 +27,34 @@ const randomString = () => {
     return code;
 };
 
+const basicTiles: ITiles = {
+    wood: 0,
+    stone: 0,
+    livestock: 0,
+    wheat: 0,
+    iron: 0,
+};
+
+const basicRegistration: Omit<IRegistration, 'player'> = {
+    tiles: basicTiles,
+    stockpile: basicTiles,
+    shoppingCart: {
+        settler: 0,
+        soldier: 0,
+        horseman: 0,
+        cannon: 0,
+        ship: 0,
+        city: 0,
+        road: 0,
+        wall: 0,
+    },
+};
+
+const saveAndPublish = (game: IGame, injector: any) => {
+    injector.get(PubSub).publish(GAME_UPDATED, { gameUpdated: game });
+    return game.save();
+};
+
 export default {
     Subscription: {
         gameAdded: {
@@ -30,13 +62,20 @@ export default {
                 return injector.get(PubSub).asyncIterator([GAME_ADDED]);
             },
         },
+        gameUpdated: {
+            subscribe: withFilter(
+                (root, args, { injector }) =>
+                    injector.get(PubSub).asyncIterator([GAME_UPDATED]),
+                ({ gameUpdated }, { code }) => gameUpdated.code === code
+            ),
+        },
     },
     Query: {
         games() {
             return Game.find();
         },
-        game(parent, args) {
-            return Game.findById(args.id);
+        game(parent, { code }) {
+            return Game.findOne({ code });
         },
         findOpenGame(parent, { code }) {
             return Game.findOne({ status: 'open', code });
@@ -46,11 +85,46 @@ export default {
         async createGame(parent, args, { injector }, { session }) {
             const game = await Game.create({
                 ...args,
+                owner: session.user,
                 code: randomString(),
-                registrations: [{ player: session.user }],
+                registrations: [{ player: session.user, ...basicRegistration }],
             });
             injector.get(PubSub).publish(GAME_ADDED, { gameAdded: game });
             return game;
+        },
+        async startGame(parent, args, { injector }, { session }) {
+            const game = await Game.findOne({ code: args.code });
+
+            if (game.status !== 'open') {
+                throw new UserInputError('This game has already started');
+            }
+        },
+        async register(parent, args, { injector }, { session }) {
+            const game = await Game.findOne({ code: args.code });
+            if (
+                game.registrations.some(
+                    ({ player }) =>
+                        player.toString() === session.user._id.toString()
+                )
+            ) {
+                return true;
+            }
+            if (game.status !== 'open') {
+                throw new UserInputError(
+                    'This game has already started and you can no longer join it'
+                );
+            }
+            if (game.registrations.length >= 6) {
+                throw new UserInputError('This game is full');
+            }
+            game.registrations = [
+                ...game.registrations,
+                { player: session.user, ...basicRegistration },
+            ];
+
+            saveAndPublish(game, injector);
+
+            return true;
         },
     },
     Registration: {

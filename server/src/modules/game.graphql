@@ -1,19 +1,23 @@
 extend type Subscription {
     gameAdded: Game
+    gameUpdated(code: String!): Game!
 }
 
 extend type Query {
     games: [Game]!
-    game(id: ID!): Game
+    game(code: String!): Game
     findOpenGame(code: String!): Game
 }
 
 extend type Mutation {
     createGame: Game
+    startGame(code: String!): Boolean
+    register(code: String!): Boolean
 }
 
 type Game {
     _id: ID!
+    owner: Player!
     code: String!
     registrations: [Registration]
 }

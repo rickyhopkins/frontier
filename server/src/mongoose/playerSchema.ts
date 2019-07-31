@@ -1,7 +1,11 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
+
+export interface IPlayer extends Document {
+    name: string;
+}
 
 export const playerSchema = new Schema({
     name: String,
 });
 
-export const Player = model('Player', playerSchema);
+export const Player = model<IPlayer>('Player', playerSchema);

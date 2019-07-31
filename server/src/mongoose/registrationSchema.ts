@@ -1,6 +1,14 @@
 import { Schema } from 'mongoose';
-import { tilesSchema } from './tilesSchema';
-import { unitsSchema } from './unitsSchema';
+import { ITiles, tilesSchema } from './tilesSchema';
+import { IUnits, unitsSchema } from './unitsSchema';
+import { IPlayer } from './playerSchema';
+
+export interface IRegistration {
+    tiles: ITiles;
+    stockpile: ITiles;
+    shoppingCart: IUnits;
+    player: IPlayer;
+}
 
 export const registrationSchema = new Schema({
     tiles: tilesSchema,

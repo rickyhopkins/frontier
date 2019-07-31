@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 mongoose.connect(
     `mongodb://frontier_app:${process.env.MONGO_PW}@ds050869.mlab.com:50869/frontier`,
-    { useNewUrlParser: true }
+    { useNewUrlParser: true, useFindAndModify: false }
 );
 const { ObjectId } = mongoose.Types;
 ObjectId.prototype.valueOf = function() {
