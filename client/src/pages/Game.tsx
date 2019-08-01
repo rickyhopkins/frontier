@@ -1,17 +1,14 @@
 import * as React from 'react';
+import { createContext, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { useMutation, useQuery, useSubscription } from '@apollo/react-hooks';
+import { useQuery, useSubscription } from '@apollo/react-hooks';
 import { GAME_UPDATED } from '../graphql/game-updated';
 import { FIND_GAME } from '../graphql/find-game';
-import { createContext, useState } from 'react';
+import { IUser } from '../contexts/AuthenticationWrapper';
 import { Registrations } from './Game/Registrations';
-import { GameMutations } from '../graphql/mutations';
-import { Button } from '../components/Button';
-import { useRequiredContext } from '../hooks/useRequiredContext';
-import {
-    AuthenticationContext,
-    IUser,
-} from '../contexts/AuthenticationWrapper';
+import { ContextMenu } from './Game/ContextMenu';
+import { GameActions } from './Game/GameActions';
+import { styled } from 'linaria/react';
 
 interface ITiles {
     wood: Number;
@@ -46,15 +43,21 @@ interface IRegistration {
 interface IGame {
     _id: string;
     owner: IUser;
+    code: string;
     registrations: IRegistration[];
+    status: 'open';
 }
+
+const GameLayout = styled.div`
+    display: grid;
+    grid-template-rows: 5rem 1fr;
+`;
 
 export const GameContext = createContext<{ game: IGame } | undefined>(
     undefined
 );
 
 export const Game = ({ match }: RouteComponentProps<{ gameCode: string }>) => {
-    const { user } = useRequiredContext(AuthenticationContext);
     const [game, setGame] = useState<IGame | undefined>();
 
     const updateGame = (data: any) => {
@@ -66,10 +69,6 @@ export const Game = ({ match }: RouteComponentProps<{ gameCode: string }>) => {
             setGame(data.subscriptionData.data.gameUpdated);
         }
     };
-
-    const [register] = useMutation(GameMutations.REGISTER, {
-        variables: { code: match.params.gameCode },
-    });
 
     useQuery(FIND_GAME, {
         variables: { code: match.params.gameCode },
@@ -83,26 +82,13 @@ export const Game = ({ match }: RouteComponentProps<{ gameCode: string }>) => {
 
     if (!game) return <div>loading</div>;
 
-    console.log(game.registrations);
-
-    const canRegister =
-        game.registrations.length < 6 &&
-        !game.registrations.some(({ player }) => player._id === user._id);
-
-    console.log(game);
-
-    const isOwner = game.owner._id === user._id;
-
-    const canStart = isOwner && game.registrations.length > 1;
-
     return (
         <GameContext.Provider value={{ game }}>
-            {match.params.gameCode}
-            <Registrations />
-            {canRegister && (
-                <Button onClick={() => register()}>Join game</Button>
-            )}{' '}
-            {canStart && <Button onClick={() => register()}>Start game</Button>}
+            <GameLayout>
+                <ContextMenu />
+                <Registrations />
+                <GameActions />
+            </GameLayout>
         </GameContext.Provider>
     );
 };

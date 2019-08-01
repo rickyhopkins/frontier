@@ -1,9 +1,9 @@
 import { styled } from 'linaria/react';
 import { Theme } from '../styles/Theme';
+import { motion } from 'framer-motion';
 
-export const StyledButton = styled.button`
+export const StyledButton = styled(motion.button)`
     height: 3rem;
-    background: ${Theme.colors.primary.color};
     color: white;
     display: inline-block;
 
@@ -14,8 +14,4 @@ export const StyledButton = styled.button`
     letter-spacing: 0.2rem;
     text-transform: uppercase;
     border: 0;
-
-    :focus {
-        outline: -webkit-focus-ring-color auto 1px;
-    }
 `;

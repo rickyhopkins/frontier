@@ -1,7 +1,6 @@
 import { getFieldsWithDirectives } from 'graphql-toolkit';
 
 const authenticated = next => (root, args, context, info) => {
-    console.log('AUTH');
     if (!context.currentUser) {
         throw new Error(`Unauthenticated!`);
     }

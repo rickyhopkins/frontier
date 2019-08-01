@@ -19,6 +19,7 @@ type Game {
     _id: ID!
     owner: Player!
     code: String!
+    status: String!
     registrations: [Registration]
 }
 

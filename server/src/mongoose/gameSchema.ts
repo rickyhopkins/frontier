@@ -23,7 +23,6 @@ export const gameSchema = new Schema({
         type: [registrationSchema],
         validate: [
             registrations => {
-                console.log(this);
                 return registrations.length <= 6;
             },
             'Max players reached',

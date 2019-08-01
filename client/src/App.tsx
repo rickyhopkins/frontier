@@ -8,6 +8,7 @@ import { styled } from 'linaria/react';
 
 const Content = styled.div`
     grid-area: content;
+    height: 100%;
 `;
 
 const App = () => {

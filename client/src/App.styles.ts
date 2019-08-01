@@ -37,6 +37,19 @@ export const Globals = css`
                 font-size: 1rem;
             }
         }
+
+        html {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        *,
+        *:before,
+        *:after {
+            -webkit-box-sizing: inherit;
+            -moz-box-sizing: inherit;
+            box-sizing: inherit;
+        }
     }
 `;
 
@@ -47,8 +60,8 @@ export const Logo = styled.img`
 
 export const AppLayout = styled.div`
     display: grid;
-    grid-template-columns: 2rem auto 2rem;
-    grid-template-rows: 10rem auto 10rem;
+    grid-template-columns: 2rem 1fr 2rem;
+    grid-template-rows: 10rem 1fr 10rem;
     grid-template-areas:
         '. logo .'
         '. content .'
