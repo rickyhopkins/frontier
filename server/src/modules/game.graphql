@@ -13,6 +13,7 @@ extend type Mutation {
     createGame: Game
     startGame(code: String!): Boolean
     register(code: String!): Boolean
+    addResource(code: String!, registrationId: ID!, resource: String!, value: Int!): Boolean
 }
 
 type Game {
@@ -23,6 +24,16 @@ type Game {
     registrations: [Registration]
 }
 
+type Tiles {
+    wood: Int
+    stone: Int
+    livestock: Int
+    wheat: Int
+    iron: Int
+}
+
 type Registration {
+    _id: ID!
     player: Player
+    tiles: Tiles
 }

@@ -8,9 +8,17 @@ export const fullGameSchema = `
 		    name
 		}
 		registrations {
+		    _id
 		    player {
 		        _id
 		        name
+		    }
+		    tiles {
+                wood
+                stone
+                livestock
+                wheat
+                iron
 		    }
 		}
 	}

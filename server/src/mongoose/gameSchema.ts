@@ -1,23 +1,23 @@
-import { Document, model, Schema } from 'mongoose';
-import { IRegistration, registrationSchema } from './registrationSchema';
-import { IPlayer } from './playerSchema';
+import { Document, model, Schema } from "mongoose";
+import { IRegistration, registrationSchema } from "./registrationSchema";
+import { IPlayer } from "./playerSchema";
 
 export interface IGame extends Document {
     owner: IPlayer;
-    status: 'open' | 'tile_allocation';
+    status: "open" | "tiles";
     registrations: IRegistration[];
 }
 
 export const gameSchema = new Schema({
     owner: {
         type: Schema.Types.ObjectId,
-        ref: 'Player',
+        ref: "Player",
     },
     code: String,
     status: {
         type: String,
-        default: 'open',
-        enum: ['open'],
+        default: "open",
+        enum: ["open", "tiles"],
     },
     registrations: {
         type: [registrationSchema],
@@ -25,9 +25,9 @@ export const gameSchema = new Schema({
             registrations => {
                 return registrations.length <= 6;
             },
-            'Max players reached',
+            "Max players reached",
         ],
     },
 });
 
-export const Game = model<IGame>('Game', gameSchema);
+export const Game = model<IGame>("Game", gameSchema);

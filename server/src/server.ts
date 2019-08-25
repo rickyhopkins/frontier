@@ -1,12 +1,12 @@
-import 'graphql-import-node';
-import 'reflect-metadata';
-import mongoose from 'mongoose';
-import { ApolloServer } from 'apollo-server';
-import { verify } from 'jsonwebtoken';
-import { AppModule } from './modules/app';
+import "graphql-import-node";
+import "reflect-metadata";
+import mongoose from "mongoose";
+import { ApolloServer } from "apollo-server";
+import { verify } from "jsonwebtoken";
+import { AppModule } from "./modules/app";
 
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
 }
 
 mongoose.connect(
@@ -21,16 +21,16 @@ ObjectId.prototype.valueOf = function() {
 const server = new ApolloServer({
     modules: [AppModule],
     cors: {
-        origin: '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        origin: "*",
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     },
     context: ({ req, connection }: any) => {
-        const { authorization: token = '' } =
+        const { authorization: token = "" } =
             (req && req.headers) || connection.context;
 
         try {
             if (token) {
-                const parsedToken: any = verify(token, 'secrets');
+                const parsedToken: any = verify(token, "secrets");
 
                 return {
                     token,

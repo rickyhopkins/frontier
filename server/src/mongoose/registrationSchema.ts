@@ -1,7 +1,7 @@
-import { Schema } from 'mongoose';
-import { ITiles, tilesSchema } from './tilesSchema';
-import { IUnits, unitsSchema } from './unitsSchema';
-import { IPlayer } from './playerSchema';
+import { Schema } from "mongoose";
+import { ITiles, tilesSchema } from "./tilesSchema";
+import { IUnits, unitsSchema } from "./unitsSchema";
+import { IPlayer } from "./playerSchema";
 
 export interface IRegistration {
     tiles: ITiles;
@@ -16,6 +16,6 @@ export const registrationSchema = new Schema({
     shoppingCart: unitsSchema,
     player: {
         type: Schema.Types.ObjectId,
-        ref: 'Player',
+        ref: "Player",
     },
 });

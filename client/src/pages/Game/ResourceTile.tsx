@@ -1,19 +1,27 @@
-import * as React from 'react';
-import { styled } from 'linaria/react';
-import { motion, Variants } from 'framer-motion';
-import { Theme } from '../../styles/Theme';
+import * as React from "react";
+import { useLayoutEffect, useRef, useState } from "react";
+import { styled } from "linaria/react";
+import iron from "../../assets/images/iron.png";
+import livestock from "../../assets/images/livestock.png";
+import stone from "../../assets/images/stone.png";
+import wheat from "../../assets/images/wheat.png";
+import wood from "../../assets/images/wood.png";
+import { Resources } from "../../../@types/frontier";
+import { Theme } from "../../styles/Theme";
+import { useMutation } from "@apollo/react-hooks";
+import { GameMutations } from "../../graphql/mutations";
+import { IRegistration } from "../Game";
+import { useTimeout } from "../../hooks/useTimeout";
 
-import iron from '../../assets/images/iron.png';
-import livestock from '../../assets/images/livestock.png';
-import stone from '../../assets/images/stone.png';
-import wheat from '../../assets/images/wheat.png';
-import wood from '../../assets/images/wood.png';
-
-const StyledTile = styled(motion.div)`
+const StyledTile = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     border-radius: 4px;
-    margin-bottom: 1rem;
-    height: 4rem;
+    height: 100%;
     padding: 0 0.75rem;
+    background-color: ${Theme.colors.contrast.background};
+    color: #d3d3d3;
 
     img {
         height: 100%;
@@ -21,58 +29,68 @@ const StyledTile = styled(motion.div)`
 `;
 
 interface IProps {
-    resourceType: 'wood' | 'stone' | 'livestock' | 'wheat' | 'iron';
+    resourceType: Resources;
+    registration: IRegistration;
+    gameCode: string;
 }
 
-export const ResourceTile = ({ resourceType }: IProps) => {
-    const variants: Variants = {
-        open: {
-            opacity: 0,
-            background: 'transparent',
-            x: -20,
-            display: 'none',
-            transition: {
-                display: {
-                    delay: 0.5,
-                },
+export const ResourceTile = ({
+    resourceType,
+    gameCode,
+    registration,
+}: IProps) => {
+    const getTileCount = () => registration.tiles[resourceType] || 0;
+    const tileCount = useRef(getTileCount());
+    const [localCount, setLocalCount] = useState(0);
+    const [addResourceMutation] = useMutation(GameMutations.ADD_RESOURCE);
+    const { start, stop, isActive } = useTimeout(() => {
+        setLocalCount(0);
+        tileCount.current = getTileCount();
+    }, 1000);
+
+    useLayoutEffect(() => {
+        if (getTileCount() !== tileCount.current) {
+            start();
+        }
+    }, [registration]);
+
+    const addResource = (value = 1) => {
+        if (isActive) {
+            stop();
+        }
+        setLocalCount(oldCount => oldCount + value);
+        addResourceMutation({
+            variables: {
+                code: gameCode,
+                registrationId: registration._id,
+                resource: resourceType,
+                value,
             },
-        },
-        tiles: {
-            opacity: 1,
-            background: Theme.colors.contrast.background,
-            x: 0,
-            display: 'block',
-        },
+        });
     };
 
     const iconSrc = (() => {
         switch (resourceType) {
-            case 'iron':
+            case "iron":
                 return iron;
-            case 'livestock':
+            case "livestock":
                 return livestock;
-            case 'stone':
+            case "stone":
                 return stone;
-            case 'wheat':
+            case "wheat":
                 return wheat;
-            case 'wheat':
+            case "wood":
             default:
                 return wood;
         }
     })();
 
     return (
-        <StyledTile
-            initial={{
-                opacity: 0,
-                background: 'transparent',
-                x: -20,
-                display: 'none',
-            }}
-            variants={variants}
-        >
-            <img src={iconSrc} />
-            {resourceType}
+        <StyledTile>
+            <img src={iconSrc} alt={resourceType} />
+            <div onClick={() => addResource(-1)}>-</div>
+            <div>{tileCount.current + localCount}</div>
+            <div onClick={() => addResource()}>+</div>
         </StyledTile>
     );
 };

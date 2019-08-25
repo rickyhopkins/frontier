@@ -1,35 +1,35 @@
-import * as React from 'react';
-import { createContext, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { useQuery, useSubscription } from '@apollo/react-hooks';
-import { GAME_UPDATED } from '../graphql/game-updated';
-import { FIND_GAME } from '../graphql/find-game';
-import { IUser } from '../contexts/AuthenticationWrapper';
-import { Registrations } from './Game/Registrations';
-import { ContextMenu } from './Game/ContextMenu';
-import { GameActions } from './Game/GameActions';
-import { styled } from 'linaria/react';
+import * as React from "react";
+import { createContext, useState } from "react";
+import { RouteComponentProps } from "react-router-dom";
+import { useQuery, useSubscription } from "@apollo/react-hooks";
+import { GAME_UPDATED } from "../graphql/game-updated";
+import { FIND_GAME } from "../graphql/find-game";
+import { IUser } from "../contexts/AuthenticationWrapper";
+import { Registrations } from "./Game/Registrations";
+import { ContextMenu } from "./Game/ContextMenu";
+import { GameActions } from "./Game/GameActions";
+import { styled } from "linaria/react";
 
 interface ITiles {
-    wood: Number;
-    stone: Number;
-    livestock: Number;
-    wheat: Number;
-    iron: Number;
+    wood: number;
+    stone: number;
+    livestock: number;
+    wheat: number;
+    iron: number;
 }
 
 interface IShoppingCart {
-    soldier: Number;
-    horseman: Number;
-    cannon: Number;
-    ship: Number;
-    settler: Number;
-    city: Number;
-    road: Number;
-    wall: Number;
+    soldier: number;
+    horseman: number;
+    cannon: number;
+    ship: number;
+    settler: number;
+    city: number;
+    road: number;
+    wall: number;
 }
 
-interface IRegistration {
+export interface IRegistration {
     _id: string;
     player: {
         _id: string;
@@ -45,7 +45,7 @@ interface IGame {
     owner: IUser;
     code: string;
     registrations: IRegistration[];
-    status: 'open';
+    status: "open" | "tiles";
 }
 
 const GameLayout = styled.div`
@@ -61,10 +61,10 @@ export const Game = ({ match }: RouteComponentProps<{ gameCode: string }>) => {
     const [game, setGame] = useState<IGame | undefined>();
 
     const updateGame = (data: any) => {
-        if ('game' in data) {
+        if ("game" in data) {
             setGame(data.game);
         }
-        if ('subscriptionData' in data) {
+        if ("subscriptionData" in data) {
             console.log(data.subscriptionData.data.gameUpdated);
             setGame(data.subscriptionData.data.gameUpdated);
         }

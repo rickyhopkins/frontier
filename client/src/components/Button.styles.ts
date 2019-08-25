@@ -1,6 +1,5 @@
-import { styled } from 'linaria/react';
-import { Theme } from '../styles/Theme';
-import { motion } from 'framer-motion';
+import { styled } from "linaria/react";
+import { motion } from "framer-motion";
 
 export const StyledButton = styled(motion.button)`
     height: 3rem;

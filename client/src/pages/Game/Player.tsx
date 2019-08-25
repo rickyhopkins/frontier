@@ -1,47 +1,74 @@
-import * as React from 'react';
-import { IUser } from '../../contexts/AuthenticationWrapper';
-import { styled } from 'linaria/react';
-import { Theme } from '../../styles/Theme';
-import { motion, Variants } from 'framer-motion';
-import { ResourceTile } from './ResourceTile';
-import { transparentize } from 'polished';
+import * as React from "react";
+import { styled } from "linaria/react";
+import { Theme } from "../../styles/Theme";
+import { ResourceTile } from "./ResourceTile";
+import { useRequiredContext } from "../../hooks/useRequiredContext";
+import { GameContext, IRegistration } from "../Game";
+import { AnimatePresence, motion } from "framer-motion";
+import { Resources } from "../../../@types/frontier";
 
 interface IProps {
-    player: IUser;
+    registration: IRegistration;
     state: string;
 }
 
 const PlayerWrapper = styled(motion.div)`
-    padding: 1rem;
     background-color: ${Theme.colors.contrast.background};
     border-radius: 4px;
 `;
 
-export const Player = ({ player, state }: IProps) => {
-    const variants: Variants = {
-        open: {
-            opacity: 1,
-            background: Theme.colors.contrast.background,
-            transition: { staggerChildren: 0.1, when: 'afterChildren' },
-        },
-        tiles: {
-            background: transparentize(1, Theme.colors.contrast.background),
-            transition: { staggerChildren: 0.1, when: 'beforeChildren' },
-        },
-    };
+const TileWrapper = styled(motion.div)`
+    color: #fff;
+`;
+
+const resources: Resources[] = ["wood", "stone", "livestock", "wheat", "iron"];
+
+export const Player = ({ registration, state }: IProps) => {
+    const { game } = useRequiredContext(GameContext);
+    const { player } = registration;
 
     return (
         <PlayerWrapper
-            initial={{ opacity: 0, y: -20 }}
-            variants={variants}
-            positionTransition={true}
+            animate={{
+                backgroundColor:
+                    game.status === "open"
+                        ? Theme.colors.contrast.background
+                        : "transparent",
+            }}
         >
-            <div>{player.name}</div>
-            <ResourceTile resourceType={'wood'} />
-            <ResourceTile resourceType={'stone'} />
-            <ResourceTile resourceType={'livestock'} />
-            <ResourceTile resourceType={'wheat'} />
-            <ResourceTile resourceType={'iron'} />
+            <div style={{ marginBottom: "1rem" }}>{player.name}</div>
+            <AnimatePresence>
+                {game.status === "tiles" &&
+                    resources.map(resource => (
+                        <TileWrapper
+                            initial={{
+                                height: 0,
+                                opacity: 0,
+                                marginBottom: "0rem",
+                                color: "transparent",
+                            }}
+                            animate={{
+                                height: "3rem",
+                                opacity: 1,
+                                marginBottom: "1rem",
+                                color: "currentColor",
+                            }}
+                            exit={{
+                                height: 0,
+                                opacity: 0,
+                                marginBottom: "0rem",
+                                color: "transparent",
+                            }}
+                            key={resource}
+                        >
+                            <ResourceTile
+                                gameCode={game.code}
+                                registration={registration}
+                                resourceType={resource}
+                            />
+                        </TileWrapper>
+                    ))}
+            </AnimatePresence>
         </PlayerWrapper>
     );
 };

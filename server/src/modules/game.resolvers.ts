@@ -1,16 +1,16 @@
-import { Game, IGame } from '../mongoose/gameSchema';
-import * as crypto from 'crypto';
-import { Player } from '../mongoose/playerSchema';
-import { PubSub, withFilter } from 'graphql-subscriptions';
-import { UserInputError } from 'apollo-server';
-import { IRegistration } from '../mongoose/registrationSchema';
-import { ITiles } from '../mongoose/tilesSchema';
+import { Game, IGame } from "../mongoose/gameSchema";
+import * as crypto from "crypto";
+import { Player } from "../mongoose/playerSchema";
+import { PubSub, withFilter } from "graphql-subscriptions";
+import { UserInputError } from "apollo-server";
+import { IRegistration } from "../mongoose/registrationSchema";
+import { ITiles } from "../mongoose/tilesSchema";
 
-const GAME_ADDED = 'GAME_ADDED';
-const GAME_UPDATED = 'GAME_UPDATED';
+const GAME_ADDED = "GAME_ADDED";
+const GAME_UPDATED = "GAME_UPDATED";
 
 const randomString = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     const charsLength = chars.length;
 
@@ -21,7 +21,7 @@ const randomString = () => {
             const code = acc.code + chars[cursor % charsLength];
             return { code, cursor };
         },
-        { code: '', cursor: 0 }
+        { code: "", cursor: 0 }
     );
 
     return code;
@@ -35,7 +35,7 @@ const basicTiles: ITiles = {
     iron: 0,
 };
 
-const basicRegistration: Omit<IRegistration, 'player'> = {
+const basicRegistration: Omit<IRegistration, "player"> = {
     tiles: basicTiles,
     stockpile: basicTiles,
     shoppingCart: {
@@ -51,8 +51,12 @@ const basicRegistration: Omit<IRegistration, 'player'> = {
 };
 
 const saveAndPublish = (game: IGame, injector: any) => {
-    injector.get(PubSub).publish(GAME_UPDATED, { gameUpdated: game });
+    publish(game, injector);
     return game.save();
+};
+
+const publish = (game: IGame, injector: any) => {
+    injector.get(PubSub).publish(GAME_UPDATED, { gameUpdated: game });
 };
 
 export default {
@@ -78,7 +82,7 @@ export default {
             return Game.findOne({ code });
         },
         findOpenGame(parent, { code }) {
-            return Game.findOne({ status: 'open', code });
+            return Game.findOne({ status: "open", code });
         },
     },
     Mutation: {
@@ -95,9 +99,14 @@ export default {
         async startGame(parent, args, { injector }, { session }) {
             const game = await Game.findOne({ code: args.code });
 
-            if (game.status !== 'open') {
-                throw new UserInputError('This game has already started');
+            if (game.status !== "open") {
+                throw new UserInputError("This game has already started");
             }
+            game.status = "tiles";
+
+            await saveAndPublish(game, injector);
+
+            return true;
         },
         async register(parent, args, { injector }, { session }) {
             const game = await Game.findOne({ code: args.code });
@@ -109,20 +118,35 @@ export default {
             ) {
                 return true;
             }
-            if (game.status !== 'open') {
+            if (game.status !== "open") {
                 throw new UserInputError(
-                    'This game has already started and you can no longer join it'
+                    "This game has already started and you can no longer join it"
                 );
             }
             if (game.registrations.length >= 6) {
-                throw new UserInputError('This game is full');
+                throw new UserInputError("This game is full");
             }
             game.registrations = [
                 ...game.registrations,
                 { player: session.user, ...basicRegistration },
             ];
 
-            saveAndPublish(game, injector);
+            await saveAndPublish(game, injector);
+
+            return true;
+        },
+        async addResource(parent, args, { injector }, { session }) {
+            const game = await Game.findOneAndUpdate(
+                { code: args.code, "registrations._id": args.registrationId },
+                {
+                    $inc: {
+                        [`registrations.$.tiles.${args.resource}`]: args.value,
+                    },
+                },
+                { new: true }
+            );
+
+            await publish(game, injector);
 
             return true;
         },
