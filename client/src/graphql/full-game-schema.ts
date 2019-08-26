@@ -2,7 +2,7 @@ export const fullGameSchema = `
 	{
 		_id
 		code
-		status
+		stage
 		owner {
 		    _id
 		    name
@@ -14,6 +14,13 @@ export const fullGameSchema = `
 		        name
 		    }
 		    tiles {
+                wood
+                stone
+                livestock
+                wheat
+                iron
+		    }
+		    stockpile {
                 wood
                 stone
                 livestock

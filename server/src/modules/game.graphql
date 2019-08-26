@@ -11,7 +11,7 @@ extend type Query {
 
 extend type Mutation {
     createGame: Game
-    startGame(code: String!): Boolean
+    nextStage(code: String!): Boolean
     register(code: String!): Boolean
     addResource(code: String!, registrationId: ID!, resource: String!, value: Int!): Boolean
 }
@@ -20,7 +20,7 @@ type Game {
     _id: ID!
     owner: Player!
     code: String!
-    status: String!
+    stage: String!
     registrations: [Registration]
 }
 
@@ -36,4 +36,5 @@ type Registration {
     _id: ID!
     player: Player
     tiles: Tiles
+    stockpile: Tiles
 }

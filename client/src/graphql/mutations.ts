@@ -6,9 +6,9 @@ export const GameMutations = {
             register(code: $code)
         }
     `,
-    START_GAME: gql`
-        mutation startGame($code: String!) {
-            startGame(code: $code)
+    NEXT_STAGE: gql`
+        mutation nextStage($code: String!) {
+            nextStage(code: $code)
         }
     `,
     ADD_RESOURCE: gql`

@@ -1,16 +1,16 @@
-import { css } from 'linaria';
-import { Theme } from './styles/Theme';
-import normalize from 'polished/lib/mixins/normalize';
-import { styled } from 'linaria/react';
-import { rem } from 'polished';
+import { css } from "linaria";
+import { Theme } from "./styles/Theme";
+import normalize from "polished/lib/mixins/normalize";
+import { styled } from "linaria/react";
+import { rem } from "polished";
 
 export const Globals = css`
     :global(body) {
-        font-family: 'Bitter', serif;
+        font-family: "Bitter", serif;
         background-color: ${Theme.colors.primary.background};
         color: ${Theme.colors.primary.color};
     }
-    :global(${''}) {
+    :global(${""}) {
         ${normalize()[0]};
 
         h1,
@@ -60,12 +60,12 @@ export const Logo = styled.img`
 
 export const AppLayout = styled.div`
     display: grid;
-    grid-template-columns: 2rem 1fr 2rem;
+    grid-template-columns: 1rem 1fr 1rem;
     grid-template-rows: 10rem 1fr 10rem;
     grid-template-areas:
-        '. logo .'
-        '. content .'
-        '. footer .';
+        ". logo ."
+        ". content ."
+        ". footer .";
     min-height: 100vh;
     justify-content: center;
     align-items: center;

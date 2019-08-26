@@ -1,5 +1,6 @@
 import { styled } from "linaria/react";
 import { motion } from "framer-motion";
+import { css } from "linaria";
 
 export const StyledButton = styled(motion.button)`
     height: 3rem;
@@ -14,3 +15,5 @@ export const StyledButton = styled(motion.button)`
     text-transform: uppercase;
     border: 0;
 `;
+
+export const OutlineButton = css``;

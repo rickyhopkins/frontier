@@ -3,8 +3,7 @@ import * as crypto from "crypto";
 import { Player } from "../mongoose/playerSchema";
 import { PubSub, withFilter } from "graphql-subscriptions";
 import { UserInputError } from "apollo-server";
-import { IRegistration } from "../mongoose/registrationSchema";
-import { ITiles } from "../mongoose/tilesSchema";
+import { IRegistration, ITiles } from "../mongoose/registrationSchema";
 
 const GAME_ADDED = "GAME_ADDED";
 const GAME_UPDATED = "GAME_UPDATED";
@@ -82,7 +81,7 @@ export default {
             return Game.findOne({ code });
         },
         findOpenGame(parent, { code }) {
-            return Game.findOne({ status: "open", code });
+            return Game.findOne({ stage: "open", code });
         },
     },
     Mutation: {
@@ -96,18 +95,6 @@ export default {
             injector.get(PubSub).publish(GAME_ADDED, { gameAdded: game });
             return game;
         },
-        async startGame(parent, args, { injector }, { session }) {
-            const game = await Game.findOne({ code: args.code });
-
-            if (game.status !== "open") {
-                throw new UserInputError("This game has already started");
-            }
-            game.status = "tiles";
-
-            await saveAndPublish(game, injector);
-
-            return true;
-        },
         async register(parent, args, { injector }, { session }) {
             const game = await Game.findOne({ code: args.code });
             if (
@@ -118,7 +105,7 @@ export default {
             ) {
                 return true;
             }
-            if (game.status !== "open") {
+            if (game.stage !== "open") {
                 throw new UserInputError(
                     "This game has already started and you can no longer join it"
                 );
@@ -143,10 +130,19 @@ export default {
                         [`registrations.$.tiles.${args.resource}`]: args.value,
                     },
                 },
-                { new: true }
+                { new: true, runValidators: true }
             );
 
             await publish(game, injector);
+
+            return true;
+        },
+        async nextStage(parent, args, { injector }, { session }) {
+            const game = await Game.findOne({ code: args.code });
+
+            const t = await game.nextStage();
+
+            await publish(t, injector);
 
             return true;
         },

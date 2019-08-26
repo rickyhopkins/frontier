@@ -5,14 +5,14 @@ import { Player } from "./Player";
 import { styled } from "linaria/react";
 
 const PlayerWrapper = styled.div`
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
 `;
 
 export const Registrations = () => {
     const { game } = useRequiredContext(GameContext);
+
+    if (game.stage === "turns") return null;
 
     return (
         <PlayerWrapper>
@@ -20,7 +20,7 @@ export const Registrations = () => {
                 <Player
                     key={registration._id}
                     registration={registration}
-                    state={game.status}
+                    state={game.stage}
                 />
             ))}
         </PlayerWrapper>

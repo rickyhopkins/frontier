@@ -1,12 +1,13 @@
-import * as React from 'react';
-import { FC } from 'react';
-import { StyledButton } from './Button.styles';
-import { Theme } from '../styles/Theme';
-import { transparentize } from 'polished';
+import * as React from "react";
+import { FC } from "react";
+import { StyledButton } from "./Button.styles";
+import { Theme } from "../styles/Theme";
+import { transparentize } from "polished";
 
-type ButtonProps = JSX.IntrinsicElements['button'];
+type ButtonProps = JSX.IntrinsicElements["button"];
 
 interface IProps extends ButtonProps {
+    outline?: boolean;
     onAnimationStart?: any;
     onDragStart?: any;
     onDragEnd?: any;
@@ -27,7 +28,7 @@ export const Button: FC<IProps> = ({ disabled, ...props }) => {
             {...props}
             disabled={disabled}
             variants={variants}
-            animate={disabled ? 'disabled' : 'enabled'}
+            animate={disabled ? "disabled" : "enabled"}
         />
     );
 };

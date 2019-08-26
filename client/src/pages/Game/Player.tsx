@@ -5,7 +5,7 @@ import { ResourceTile } from "./ResourceTile";
 import { useRequiredContext } from "../../hooks/useRequiredContext";
 import { GameContext, IRegistration } from "../Game";
 import { AnimatePresence, motion } from "framer-motion";
-import { Resources } from "../../../@types/frontier";
+import { Resources } from "../../@types/frontier";
 
 interface IProps {
     registration: IRegistration;
@@ -15,13 +15,12 @@ interface IProps {
 const PlayerWrapper = styled(motion.div)`
     background-color: ${Theme.colors.contrast.background};
     border-radius: 4px;
+    margin: 0.5rem;
 `;
 
 const TileWrapper = styled(motion.div)`
     color: #fff;
 `;
-
-const resources: Resources[] = ["wood", "stone", "livestock", "wheat", "iron"];
 
 export const Player = ({ registration, state }: IProps) => {
     const { game } = useRequiredContext(GameContext);
@@ -31,15 +30,15 @@ export const Player = ({ registration, state }: IProps) => {
         <PlayerWrapper
             animate={{
                 backgroundColor:
-                    game.status === "open"
+                    game.stage === "open"
                         ? Theme.colors.contrast.background
                         : "transparent",
             }}
         >
-            <div style={{ marginBottom: "1rem" }}>{player.name}</div>
+            <div style={{ padding: "1rem" }}>{player.name}</div>
             <AnimatePresence>
-                {game.status === "tiles" &&
-                    resources.map(resource => (
+                {game.stage !== "open" &&
+                    Object.values(Resources).map(resource => (
                         <TileWrapper
                             initial={{
                                 height: 0,
@@ -62,7 +61,6 @@ export const Player = ({ registration, state }: IProps) => {
                             key={resource}
                         >
                             <ResourceTile
-                                gameCode={game.code}
                                 registration={registration}
                                 resourceType={resource}
                             />

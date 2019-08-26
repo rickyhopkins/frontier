@@ -9,8 +9,9 @@ import { Registrations } from "./Game/Registrations";
 import { ContextMenu } from "./Game/ContextMenu";
 import { GameActions } from "./Game/GameActions";
 import { styled } from "linaria/react";
+import { Purchasing } from "./Game/Purchasing";
 
-interface ITiles {
+export interface ITiles {
     wood: number;
     stone: number;
     livestock: number;
@@ -45,12 +46,19 @@ interface IGame {
     owner: IUser;
     code: string;
     registrations: IRegistration[];
-    status: "open" | "tiles";
+    stage: "open" | "tiles" | "turns";
 }
 
 const GameLayout = styled.div`
     display: grid;
     grid-template-rows: 5rem 1fr;
+    justify-items: center;
+`;
+
+const GameContent = styled.div`
+    border: 1px solid #202b2b;
+    padding: 1rem;
+    margin-bottom: 2rem;
 `;
 
 export const GameContext = createContext<{ game: IGame } | undefined>(
@@ -65,7 +73,6 @@ export const Game = ({ match }: RouteComponentProps<{ gameCode: string }>) => {
             setGame(data.game);
         }
         if ("subscriptionData" in data) {
-            console.log(data.subscriptionData.data.gameUpdated);
             setGame(data.subscriptionData.data.gameUpdated);
         }
     };
@@ -86,7 +93,10 @@ export const Game = ({ match }: RouteComponentProps<{ gameCode: string }>) => {
         <GameContext.Provider value={{ game }}>
             <GameLayout>
                 <ContextMenu />
-                <Registrations />
+                <GameContent>
+                    <Purchasing />
+                    <Registrations />
+                </GameContent>
                 <GameActions />
             </GameLayout>
         </GameContext.Provider>

@@ -6,15 +6,18 @@ import livestock from "../../assets/images/livestock.png";
 import stone from "../../assets/images/stone.png";
 import wheat from "../../assets/images/wheat.png";
 import wood from "../../assets/images/wood.png";
-import { Resources } from "../../../@types/frontier";
 import { Theme } from "../../styles/Theme";
 import { useMutation } from "@apollo/react-hooks";
 import { GameMutations } from "../../graphql/mutations";
-import { IRegistration } from "../Game";
+import { GameContext, IRegistration } from "../Game";
 import { useTimeout } from "../../hooks/useTimeout";
+import { useRequiredContext } from "../../hooks/useRequiredContext";
+import { Resources } from "../../@types/frontier";
 
 const StyledTile = styled.div`
-    display: flex;
+    display: grid;
+    grid-template-columns: 3rem 1fr 2rem 1fr;
+    gap: 0.5rem;
     justify-content: space-between;
     align-items: center;
     border-radius: 4px;
@@ -31,15 +34,16 @@ const StyledTile = styled.div`
 interface IProps {
     resourceType: Resources;
     registration: IRegistration;
-    gameCode: string;
 }
 
-export const ResourceTile = ({
-    resourceType,
-    gameCode,
-    registration,
-}: IProps) => {
-    const getTileCount = () => registration.tiles[resourceType] || 0;
+export const ResourceTile = ({ resourceType, registration }: IProps) => {
+    const {
+        game: { code, stage },
+    } = useRequiredContext(GameContext);
+    const getTileCount = () =>
+        registration[stage === "turns" ? "stockpile" : "tiles"][
+            resourceType as Resources
+        ] || 0;
     const tileCount = useRef(getTileCount());
     const [localCount, setLocalCount] = useState(0);
     const [addResourceMutation] = useMutation(GameMutations.ADD_RESOURCE);
@@ -55,13 +59,14 @@ export const ResourceTile = ({
     }, [registration]);
 
     const addResource = (value = 1) => {
+        if (getTileCount() + value < 0) return;
         if (isActive) {
             stop();
         }
         setLocalCount(oldCount => oldCount + value);
         addResourceMutation({
             variables: {
-                code: gameCode,
+                code,
                 registrationId: registration._id,
                 resource: resourceType,
                 value,
@@ -89,7 +94,9 @@ export const ResourceTile = ({
         <StyledTile>
             <img src={iconSrc} alt={resourceType} />
             <div onClick={() => addResource(-1)}>-</div>
-            <div>{tileCount.current + localCount}</div>
+            <div style={{ textAlign: "center" }}>
+                {tileCount.current + localCount}
+            </div>
             <div onClick={() => addResource()}>+</div>
         </StyledTile>
     );

@@ -13,7 +13,7 @@ export const GameActions = () => {
     const [register] = useMutation(GameMutations.REGISTER, {
         variables: { code: game.code },
     });
-    const [startGame] = useMutation(GameMutations.START_GAME, {
+    const [nextStage] = useMutation(GameMutations.NEXT_STAGE, {
         variables: { code: game.code },
     });
 
@@ -31,7 +31,7 @@ export const GameActions = () => {
                 <Button onClick={() => register()}>Join game</Button>
             )}
             {isOwner && (
-                <Button onClick={() => startGame()} disabled={!canStart}>
+                <Button onClick={() => nextStage()} disabled={!canStart}>
                     {canStart ? "Start game" : "Waiting for one more player"}
                 </Button>
             )}

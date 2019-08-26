@@ -1,20 +1,19 @@
-import * as React from 'react';
-import { AppWrapper } from '../../App.styles';
-import { Input } from '../../components/Input';
-import { ChangeEventHandler } from 'react';
-import { useState } from 'react';
-import { FIND_OPEN_GAME } from '../../graphql/find-open-game';
-import { useQuery } from '@apollo/react-hooks';
-import { Redirect } from 'react-router';
+import * as React from "react";
+import { AppWrapper } from "../../App.styles";
+import { Input } from "../../components/Input";
+import { ChangeEventHandler } from "react";
+import { useState } from "react";
+import { FIND_OPEN_GAME } from "../../graphql/find-open-game";
+import { useQuery } from "@apollo/react-hooks";
+import { Redirect } from "react-router";
 
 export const GameSearch = () => {
-    const [code, setCode] = useState('');
+    const [code, setCode] = useState("");
 
     const { data, loading } = useQuery(FIND_OPEN_GAME, {
         variables: { code },
         skip: code.length < 4,
     });
-    console.log(loading);
 
     const handleChange: ChangeEventHandler<HTMLInputElement> = e => {
         if (e.target.value.length > 4) return;
@@ -31,11 +30,11 @@ export const GameSearch = () => {
             <Input
                 value={code}
                 onChange={handleChange}
-                placeholder={'Game code'}
-                hint={'4 digit code'}
+                placeholder={"Game code"}
+                hint={"4 digit code"}
                 error={
                     !loading && code.length === 4
-                        ? 'That game code does not exist'
+                        ? "That game code does not exist"
                         : undefined
                 }
             />
