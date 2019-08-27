@@ -38,7 +38,6 @@ export const TradingButton = () => {
 
     return (
         <>
-            {state.tradingWith}
             <AnimateOut active={active && !state.tradingWith}>
                 Who do you want to trade with
                 <Button onClick={setTradingUser(MERCHANT_TRADER_ID)}>

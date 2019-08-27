@@ -11,6 +11,7 @@ import {
     PurchasingReducer,
     PurchsingActions,
 } from "./Purchasing.reducer";
+import { AnimateOut } from "../../styles/AnimateOut";
 
 const PurchasingWrapper = styled.div`
     display: flex;
@@ -47,6 +48,9 @@ export const Purchasing = () => {
                         <StockpileTile key={resource} resource={resource} />
                     ))}
                 </StockpileWrapper>
+                <AnimateOut active={!!state.tradingWith}>
+                    {state.tradingWith}
+                </AnimateOut>
                 <TradingButton />
             </PurchasingWrapper>
         </PurchasingContext.Provider>
