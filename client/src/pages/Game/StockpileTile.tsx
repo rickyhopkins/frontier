@@ -1,7 +1,5 @@
 import * as React from "react";
 import { useRequiredContext } from "../../hooks/useRequiredContext";
-import { GameContext } from "../Game";
-import { AuthenticationContext } from "../../contexts/AuthenticationWrapper";
 import { Resources } from "../../@types/frontier";
 import { styled } from "linaria/react";
 import iron from "../../assets/images/iron.png";
@@ -19,6 +17,9 @@ import { css, cx } from "linaria";
 
 interface IProps {
     resource: Resources;
+    value: number;
+    isCurrentUser?: boolean;
+    isMerchant?: boolean;
 }
 
 const Tile = styled.div`
@@ -44,15 +45,8 @@ const DisabledTile = css`
     opacity: 0.5;
 `;
 
-export const StockpileTile = ({ resource }: IProps) => {
-    const { game } = useRequiredContext(GameContext);
-    const { user } = useRequiredContext(AuthenticationContext);
+export const StockpileTile = ({ resource, value, isCurrentUser }: IProps) => {
     const { state, dispatch } = useRequiredContext(PurchasingContext);
-    const registration = game.registrations.find(
-        ({ player }) => player._id === user._id
-    );
-
-    if (!registration) return null;
 
     const iconSrc = (() => {
         switch (resource) {
@@ -71,11 +65,15 @@ export const StockpileTile = ({ resource }: IProps) => {
     })();
 
     const onClick = () => {
-        dispatch({ type: PurchasingActionTypes.ADD_TO_TRADE, resource });
+        dispatch({
+            type: PurchasingActionTypes.ADD_TO_TRADE,
+            resource,
+            amount: isCurrentUser ? -1 : 1,
+        });
     };
 
     const resourceCount =
-        registration.stockpile[resource] - (state.trade[resource] || 0);
+        value + (state.trade[resource] || 0) * (isCurrentUser ? 1 : -1);
 
     const disabled =
         state.tradingWith &&
@@ -83,7 +81,7 @@ export const StockpileTile = ({ resource }: IProps) => {
 
     return (
         <Tile
-            onClick={disabled ? undefined : onClick}
+            onClick={!state.tradingWith || disabled ? undefined : onClick}
             className={cx(disabled && DisabledTile)}
         >
             <img src={iconSrc} alt={resource} />

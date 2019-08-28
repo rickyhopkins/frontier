@@ -10,14 +10,9 @@ import { ContextMenu } from "./Game/ContextMenu";
 import { GameActions } from "./Game/GameActions";
 import { styled } from "linaria/react";
 import { Purchasing } from "./Game/Purchasing";
+import { Resources } from "../@types/frontier";
 
-export interface ITiles {
-    wood: number;
-    stone: number;
-    livestock: number;
-    wheat: number;
-    iron: number;
-}
+export type ITiles = Record<Resources, number>;
 
 interface IShoppingCart {
     soldier: number;

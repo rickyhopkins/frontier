@@ -18,7 +18,11 @@ export type PurchsingActions =
           type: PurchasingActionTypes.SET_TRADING_WITH;
           tradingWith?: string;
       }
-    | { type: PurchasingActionTypes.ADD_TO_TRADE; resource: Resources };
+    | {
+          type: PurchasingActionTypes.ADD_TO_TRADE;
+          resource: Resources;
+          amount: number;
+      };
 
 export const PurchasingReducer: React.Reducer<
     IPurchasingState,
@@ -33,10 +37,7 @@ export const PurchasingReducer: React.Reducer<
                 trade: {
                     ...state.trade,
                     [action.resource]:
-                        (state.trade[action.resource] || 0) +
-                        ((state.tradingWith || "") === MERCHANT_TRADER_ID
-                            ? 4
-                            : 1),
+                        (state.trade[action.resource] || 0) + action.amount,
                 },
             };
         default:

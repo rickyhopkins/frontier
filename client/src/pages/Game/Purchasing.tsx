@@ -3,8 +3,6 @@ import { createContext, Dispatch, useReducer } from "react";
 import { useRequiredContext } from "../../hooks/useRequiredContext";
 import { GameContext } from "../Game";
 import { styled } from "linaria/react";
-import { Resources } from "../../@types/frontier";
-import { StockpileTile } from "./StockpileTile";
 import { TradingButton } from "./TradingButton";
 import {
     IPurchasingState,
@@ -12,18 +10,14 @@ import {
     PurchsingActions,
 } from "./Purchasing.reducer";
 import { AnimateOut } from "../../styles/AnimateOut";
+import { Stockpile } from "./Stockpile";
+import { AuthenticationContext } from "../../contexts/AuthenticationWrapper";
+import { Resources } from "../../@types/frontier";
 
 const PurchasingWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-`;
-
-const StockpileWrapper = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 1rem;
 `;
 
 export const PurchasingContext = createContext<
@@ -32,24 +26,36 @@ export const PurchasingContext = createContext<
 >(undefined);
 
 export const Purchasing = () => {
+    const { game } = useRequiredContext(GameContext);
+    const { user } = useRequiredContext(AuthenticationContext);
+
     const [state, dispatch] = useReducer(PurchasingReducer, {
         trade: {},
     });
 
-    const { game } = useRequiredContext(GameContext);
+    const registration = game.registrations.find(
+        ({ player }) => player._id === user._id
+    );
 
-    if (game.stage !== "turns") return null;
+    const tradersRegistration = game.registrations.find(
+        ({ player }) => player._id === state.tradingWith
+    );
+
+    if (game.stage !== "turns" || !registration) return null;
 
     return (
         <PurchasingContext.Provider value={{ state, dispatch }}>
             <PurchasingWrapper>
-                <StockpileWrapper>
-                    {Object.values(Resources).map(resource => (
-                        <StockpileTile key={resource} resource={resource} />
+                <Stockpile stockpile={registration.stockpile} isCurrentUser />
+                <div style={{ display: "flex" }}>
+                    {Object.values(Resources).map((resource: Resources) => (
+                        <div key={resource}>{state.trade[resource]}</div>
                     ))}
-                </StockpileWrapper>
+                </div>
                 <AnimateOut active={!!state.tradingWith}>
-                    {state.tradingWith}
+                    {tradersRegistration && (
+                        <Stockpile stockpile={tradersRegistration.stockpile} />
+                    )}
                 </AnimateOut>
                 <TradingButton />
             </PurchasingWrapper>
