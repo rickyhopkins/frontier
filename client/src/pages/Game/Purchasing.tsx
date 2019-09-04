@@ -13,11 +13,25 @@ import { AnimateOut } from "../../styles/AnimateOut";
 import { Stockpile } from "./Stockpile";
 import { AuthenticationContext } from "../../contexts/AuthenticationWrapper";
 import { Resources } from "../../@types/frontier";
+import { css, cx } from "linaria";
+import { TradingTile } from "./TradingTile";
 
 const PurchasingWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+`;
+
+const StockpileWrapper = styled.div`
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+`;
+
+const TradingWrapper = css`
+    grid-auto-flow: column;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    column-gap: 1rem;
 `;
 
 export const PurchasingContext = createContext<
@@ -46,17 +60,23 @@ export const Purchasing = () => {
     return (
         <PurchasingContext.Provider value={{ state, dispatch }}>
             <PurchasingWrapper>
-                <Stockpile stockpile={registration.stockpile} isCurrentUser />
-                <div style={{ display: "flex" }}>
+                <StockpileWrapper
+                    className={cx(state.tradingWith && TradingWrapper)}
+                >
+                    <Stockpile
+                        stockpile={registration.stockpile}
+                        isCurrentUser
+                    />
                     {Object.values(Resources).map((resource: Resources) => (
-                        <div key={resource}>{state.trade[resource]}</div>
+                        <TradingTile
+                            key={resource}
+                            value={state.trade[resource]}
+                        />
                     ))}
-                </div>
-                <AnimateOut active={!!state.tradingWith}>
                     {tradersRegistration && (
                         <Stockpile stockpile={tradersRegistration.stockpile} />
                     )}
-                </AnimateOut>
+                </StockpileWrapper>
                 <TradingButton />
             </PurchasingWrapper>
         </PurchasingContext.Provider>

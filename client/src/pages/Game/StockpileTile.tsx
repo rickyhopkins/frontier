@@ -14,6 +14,7 @@ import {
 } from "./Purchasing.reducer";
 import { PurchasingContext } from "./Purchasing";
 import { css, cx } from "linaria";
+import { motion } from "framer-motion";
 
 interface IProps {
     resource: Resources;
@@ -22,7 +23,7 @@ interface IProps {
     isMerchant?: boolean;
 }
 
-const Tile = styled.div`
+const Tile = styled(motion.div)`
     display: flex;
     flex-direction: column;
     padding: 0.5rem;
@@ -83,6 +84,7 @@ export const StockpileTile = ({ resource, value, isCurrentUser }: IProps) => {
         <Tile
             onClick={!state.tradingWith || disabled ? undefined : onClick}
             className={cx(disabled && DisabledTile)}
+            positionTransition
         >
             <img src={iconSrc} alt={resource} />
             <span>{resourceCount}</span>

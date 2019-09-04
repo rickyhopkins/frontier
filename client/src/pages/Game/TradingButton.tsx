@@ -39,7 +39,7 @@ export const TradingButton = () => {
     return (
         <>
             <AnimateOut active={active && !state.tradingWith}>
-                Who do you want to trade with
+                <div>Who do you want to trade with?</div>
                 <Button onClick={setTradingUser(MERCHANT_TRADER_ID)}>
                     The merchant
                 </Button>
