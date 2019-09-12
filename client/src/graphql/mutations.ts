@@ -26,4 +26,9 @@ export const GameMutations = {
             )
         }
     `,
+    PROPOSE_TRADE: gql`
+        mutation proposeTrade($code: String!, $trade: TradeInput!) {
+            proposeTrade(code: $code, trade: $trade)
+        }
+    `,
 };

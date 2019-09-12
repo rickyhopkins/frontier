@@ -146,6 +146,26 @@ export default {
 
             return true;
         },
+        async proposeTrade(parent, args, { injector }, { session }) {
+            const { code, trade } = args;
+            const game = await Game.findOneAndUpdate(
+                { code: code },
+                {
+                    $push: {
+                        trades: {
+                            tradeValues: trade.values,
+                            fromRegistration: trade.fromRegistrationId,
+                            toRegistration: trade.toRegistrationId,
+                        },
+                    },
+                },
+                { new: true, runValidators: true }
+            );
+
+            await publish(game, injector);
+
+            return true;
+        },
     },
     Registration: {
         player: ({ player }) => {

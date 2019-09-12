@@ -10,12 +10,34 @@ import {
     PurchasingActionTypes,
 } from "./Purchasing.reducer";
 import { AnimateOut } from "../../styles/AnimateOut";
+import { useMutation } from "@apollo/react-hooks";
+import { GameMutations } from "../../graphql/mutations";
 
 export const TradingButton = () => {
     const [active, setActive] = useState(false);
     const { game } = useRequiredContext(GameContext);
     const { user } = useRequiredContext(AuthenticationContext);
     const { state, dispatch } = useRequiredContext(PurchasingContext);
+    const [proposeTradeMutation] = useMutation(GameMutations.PROPOSE_TRADE);
+
+    const finaliseTrade = () => {
+        const myRegistration = game.registrations.find(
+            ({ player }) => player._id === user._id
+        );
+
+        if (!myRegistration) return;
+
+        proposeTradeMutation({
+            variables: {
+                code: game.code,
+                trade: {
+                    values: state.trade,
+                    fromRegistrationId: myRegistration._id,
+                    toRegistrationId: state.tradingWith,
+                },
+            },
+        });
+    };
 
     const setTradingUser = (tradingWith: string) => () => {
         dispatch({
@@ -43,18 +65,18 @@ export const TradingButton = () => {
                 <Button onClick={setTradingUser(MERCHANT_TRADER_ID)}>
                     The merchant
                 </Button>
-                {otherRegistrations.map(({ player }) => (
-                    <Button
-                        key={player._id}
-                        onClick={setTradingUser(player._id)}
-                    >
+                {otherRegistrations.map(({ _id, player }) => (
+                    <Button key={player._id} onClick={setTradingUser(_id)}>
                         {player.name}
                     </Button>
                 ))}
             </AnimateOut>
             <Button onClick={toggleActive}>
-                {active ? "Finished trading" : "Trade resources"}
+                {active ? "Cancel trade" : "Trade resources"}
             </Button>
+            {state.tradingWith && (
+                <Button onClick={finaliseTrade}>Propose trade terms</Button>
+            )}
         </>
     );
 };

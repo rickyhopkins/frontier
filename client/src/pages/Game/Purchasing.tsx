@@ -9,7 +9,6 @@ import {
     PurchasingReducer,
     PurchsingActions,
 } from "./Purchasing.reducer";
-import { AnimateOut } from "../../styles/AnimateOut";
 import { Stockpile } from "./Stockpile";
 import { AuthenticationContext } from "../../contexts/AuthenticationWrapper";
 import { Resources } from "../../@types/frontier";
@@ -52,7 +51,7 @@ export const Purchasing = () => {
     );
 
     const tradersRegistration = game.registrations.find(
-        ({ player }) => player._id === state.tradingWith
+        ({ _id }) => _id === state.tradingWith
     );
 
     if (game.stage !== "turns" || !registration) return null;

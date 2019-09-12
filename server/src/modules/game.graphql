@@ -14,6 +14,21 @@ extend type Mutation {
     nextStage(code: String!): Boolean
     register(code: String!): Boolean
     addResource(code: String!, registrationId: ID!, resource: String!, value: Int!): Boolean
+    proposeTrade(code: String!, trade: TradeInput!): Boolean
+}
+
+input TilesInput {
+    wood: Int
+    stone: Int
+    livestock: Int
+    wheat: Int
+    iron: Int
+}
+
+input TradeInput {
+    fromRegistrationId: ID!
+    toRegistrationId: ID!
+    values: TilesInput!
 }
 
 type Game {
@@ -22,6 +37,14 @@ type Game {
     code: String!
     stage: String!
     registrations: [Registration]
+    trades: [Trade]
+}
+
+type Trade {
+    tradeValues: Tiles!
+    fromRegistration: ID!
+    toRegistration: ID!
+    outcome: String!
 }
 
 type Tiles {

@@ -1,11 +1,13 @@
 import { Document, Model, model, Schema } from "mongoose";
 import { IRegistration, registrationSchema } from "./registrationSchema";
 import { IPlayer } from "./playerSchema";
+import { ITrade, tradeSchema } from "./tradeSchema";
 
 export interface IGame extends Document {
     owner: IPlayer;
     stage: "open" | "tiles" | "turns";
     registrations: IRegistration[];
+    trades: ITrade[];
     nextStage(): IGame;
 }
 
@@ -29,6 +31,7 @@ export const gameSchema = new Schema({
             "Max players reached",
         ],
     },
+    trades: [tradeSchema],
 });
 
 gameSchema.methods.nextStage = async function() {

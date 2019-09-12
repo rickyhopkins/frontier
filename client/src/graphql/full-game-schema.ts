@@ -28,5 +28,16 @@ export const fullGameSchema = `
                 iron
 		    }
 		}
+        trades {
+            fromRegistration
+            toRegistration
+            tradeValues {
+                wood
+                stone
+                livestock
+                wheat
+                iron
+            }
+        }
 	}
 `;

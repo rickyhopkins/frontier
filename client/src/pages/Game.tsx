@@ -11,6 +11,7 @@ import { GameActions } from "./Game/GameActions";
 import { styled } from "linaria/react";
 import { Purchasing } from "./Game/Purchasing";
 import { Resources } from "../@types/frontier";
+import { Notifications } from "../components/Notifications/Notifications";
 
 export type ITiles = Record<Resources, number>;
 
@@ -36,11 +37,18 @@ export interface IRegistration {
     shoppingCart: IShoppingCart;
 }
 
+export interface ITrade {
+    fromRegistration: string;
+    toRegistration: string;
+    tradeValues: ITiles;
+}
+
 interface IGame {
     _id: string;
     owner: IUser;
     code: string;
     registrations: IRegistration[];
+    trades: ITrade[];
     stage: "open" | "tiles" | "turns";
 }
 
@@ -94,6 +102,7 @@ export const Game = ({ match }: RouteComponentProps<{ gameCode: string }>) => {
                 </GameContent>
                 <GameActions />
             </GameLayout>
+            <Notifications />
         </GameContext.Provider>
     );
 };
