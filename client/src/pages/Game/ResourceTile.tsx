@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { styled } from "linaria/react";
 import iron from "../../assets/images/iron.png";
 import livestock from "../../assets/images/livestock.png";
@@ -40,10 +40,13 @@ export const ResourceTile = ({ resourceType, registration }: IProps) => {
     const {
         game: { code, stage },
     } = useRequiredContext(GameContext);
-    const getTileCount = () =>
-        registration[stage === "turns" ? "stockpile" : "tiles"][
-            resourceType as Resources
-        ] || 0;
+    const getTileCount = useCallback(
+        () =>
+            registration[stage === "turns" ? "stockpile" : "tiles"][
+                resourceType as Resources
+            ] || 0,
+        [registration, resourceType, stage]
+    );
     const tileCount = useRef(getTileCount());
     const [localCount, setLocalCount] = useState(0);
     const [addResourceMutation] = useMutation(GameMutations.ADD_RESOURCE);
@@ -56,7 +59,7 @@ export const ResourceTile = ({ resourceType, registration }: IProps) => {
         if (getTileCount() !== tileCount.current) {
             start();
         }
-    }, [registration]);
+    }, [registration, getTileCount, start]);
 
     const addResource = (value = 1) => {
         if (getTileCount() + value < 0) return;

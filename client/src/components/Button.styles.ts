@@ -5,6 +5,7 @@ import { css } from "linaria";
 export const StyledButton = styled(motion.button)`
     height: 3rem;
     color: white;
+    fill: white;
     display: inline-block;
 
     cursor: pointer;
@@ -14,6 +15,15 @@ export const StyledButton = styled(motion.button)`
     letter-spacing: 0.2rem;
     text-transform: uppercase;
     border: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+export const SmallStyledButton = css`
+    padding: 0.25rem;
+    height: 2rem;
+    font-size: 0.75rem;
 `;
 
 export const OutlineButton = css``;

@@ -3,10 +3,11 @@ import { IPlayer } from "./playerSchema";
 import { ITiles } from "./registrationSchema";
 
 export interface ITrade {
+    _id: string;
     tradeValues: ITiles;
     fromRegistration: string;
     toRegistration: string;
-    outcome: "pending" | "declined" | "accepted";
+    outcome: "pending" | "declined" | "accepted" | "resources-changed";
 }
 
 export const tradeSchema = new Schema({
@@ -22,6 +23,6 @@ export const tradeSchema = new Schema({
     outcome: {
         type: String,
         default: "pending",
-        enum: ["pending", "declined", "accepted"],
+        enum: ["pending", "declined", "accepted", "insufficient-resources"],
     },
 });

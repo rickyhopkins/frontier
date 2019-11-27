@@ -1,8 +1,9 @@
 import * as React from "react";
 import { FC } from "react";
-import { StyledButton } from "./Button.styles";
+import { SmallStyledButton, StyledButton } from "./Button.styles";
 import { Theme } from "../styles/Theme";
 import { transparentize } from "polished";
+import { cx } from "linaria";
 
 type ButtonProps = JSX.IntrinsicElements["button"];
 
@@ -31,4 +32,8 @@ export const Button: FC<IProps> = ({ disabled, ...props }) => {
             animate={disabled ? "disabled" : "enabled"}
         />
     );
+};
+
+export const SmallButton: FC<IProps> = ({ className, ...props }) => {
+    return <Button {...props} className={cx(SmallStyledButton, className)} />;
 };

@@ -1,4 +1,4 @@
-import { Document, Model, model, Schema } from "mongoose";
+import { Document, model, Schema } from "mongoose";
 import { IRegistration, registrationSchema } from "./registrationSchema";
 import { IPlayer } from "./playerSchema";
 import { ITrade, tradeSchema } from "./tradeSchema";
@@ -9,6 +9,7 @@ export interface IGame extends Document {
     registrations: IRegistration[];
     trades: ITrade[];
     nextStage(): IGame;
+    acceptTrade(tradeId: string, accept: boolean): IGame;
 }
 
 export const gameSchema = new Schema({
@@ -63,6 +64,50 @@ gameSchema.methods.nextStage = async function() {
                 { new: true }
             );
     }
+    return this;
+};
+
+gameSchema.methods.acceptTrade = async function(
+    tradeId: string,
+    accept: boolean
+) {
+    const trade = this.trades.find(({ _id }) => _id.equals(tradeId));
+
+    if (!accept) {
+        trade.outcome = "declined";
+        await this.save();
+        return this;
+    }
+
+    const fromRegistration = this.registrations.find(({ _id }) =>
+        _id.equals(trade.fromRegistration)
+    );
+    const toRegistration = this.registrations.find(({ _id }) =>
+        _id.equals(trade.toRegistration)
+    );
+
+    const enoughResources = Object.entries(trade.tradeValues.toJSON()).every(
+        ([resource, value]: [string, number]) => {
+            if (value < 0) {
+                return fromRegistration.stockpile[resource] >= Math.abs(value);
+            }
+            return toRegistration.stockpile[resource] >= value;
+        }
+    );
+
+    if (!enoughResources) {
+        trade.outcome = "insufficient-resources";
+    } else {
+        trade.outcome = "accepted";
+        Object.entries(trade.tradeValues.toJSON()).forEach(
+            ([resource, value]: [string, number]) => {
+                fromRegistration.stockpile[resource] += value;
+                toRegistration.stockpile[resource] -= value;
+            }
+        );
+    }
+
+    await this.save();
     return this;
 };
 

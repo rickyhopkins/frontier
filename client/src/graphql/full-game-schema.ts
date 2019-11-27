@@ -29,6 +29,7 @@ export const fullGameSchema = `
 		    }
 		}
         trades {
+            _id
             fromRegistration
             toRegistration
             tradeValues {

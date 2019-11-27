@@ -38,6 +38,7 @@ export interface IRegistration {
 }
 
 export interface ITrade {
+    _id: string;
     fromRegistration: string;
     toRegistration: string;
     tradeValues: ITiles;

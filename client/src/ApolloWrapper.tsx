@@ -1,13 +1,14 @@
-import * as React from 'react';
-import { FC } from 'react';
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { USER_TOKEN_KEY } from './contexts/AuthenticationWrapper';
-import { HttpLink } from 'apollo-link-http';
-import { WebSocketLink } from 'apollo-link-ws';
-import { ApolloLink, from, split } from 'apollo-link';
-import { getMainDefinition } from 'apollo-utilities';
-import { ApolloProvider } from '@apollo/react-hooks';
+import * as React from "react";
+import { FC } from "react";
+import { ApolloClient } from "apollo-client";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { USER_TOKEN_KEY } from "./contexts/AuthenticationWrapper";
+import { HttpLink } from "apollo-link-http";
+import { WebSocketLink } from "apollo-link-ws";
+import { ApolloLink, from, split } from "apollo-link";
+import { getMainDefinition } from "apollo-utilities";
+import { ApolloProvider } from "@apollo/react-hooks";
+import { OperationDefinitionNode } from "graphql";
 
 const getUserToken = () => {
     const rawToken = localStorage.getItem(USER_TOKEN_KEY);
@@ -15,13 +16,13 @@ const getUserToken = () => {
 };
 
 const httpBase = new HttpLink({
-    uri: `http${process.env.NODE_ENV === 'production' ? 's' : ''}://${
+    uri: `http${process.env.NODE_ENV === "production" ? "s" : ""}://${
         process.env.REACT_APP_GQL_URL
     }graphql`,
 });
 
 const wsBase = new WebSocketLink({
-    uri: `ws${process.env.NODE_ENV === 'production' ? 's' : ''}://${
+    uri: `ws${process.env.NODE_ENV === "production" ? "s" : ""}://${
         process.env.REACT_APP_GQL_URL
     }graphql`,
     options: {
@@ -47,11 +48,21 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 const httpLink = from([authMiddleware, httpBase]);
 const wsLink = from([authMiddleware, wsBase]);
 
+const isOperationDefinitionNode = (
+    node: any
+): node is OperationDefinitionNode => {
+    return "operation" in node;
+};
+
 const link = split(
     // split based on operation type
     ({ query }) => {
-        const { kind, operation } = getMainDefinition(query);
-        return kind === 'OperationDefinition' && operation === 'subscription';
+        const node = getMainDefinition(query);
+        return (
+            node.kind === "OperationDefinition" &&
+            (isOperationDefinitionNode(node) &&
+                node.operation === "subscription")
+        );
     },
     wsLink,
     httpLink

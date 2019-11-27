@@ -166,6 +166,15 @@ export default {
 
             return true;
         },
+        async acceptTrade(parent, args, { injector }) {
+            const game = await Game.findOne({ code: args.code });
+
+            const updatedGame = await game.acceptTrade(args.tradeId, true);
+
+            await publish(updatedGame, injector);
+
+            return true;
+        },
     },
     Registration: {
         player: ({ player }) => {

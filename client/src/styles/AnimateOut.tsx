@@ -2,22 +2,20 @@ import * as React from "react";
 import { FC } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-interface IProps {
-    active: boolean;
-}
-
-export const AnimateOut: FC<IProps> = ({ children, active }) => {
+export const AnimateOut: FC = ({ children }) => {
     return (
         <AnimatePresence>
-            {active && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                >
-                    {children}
-                </motion.div>
-            )}
+            {React.Children.map(children, child => {
+                return (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        {child}
+                    </motion.div>
+                );
+            })}
         </AnimatePresence>
     );
 };

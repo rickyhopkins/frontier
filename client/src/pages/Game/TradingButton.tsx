@@ -9,9 +9,9 @@ import {
     MERCHANT_TRADER_ID,
     PurchasingActionTypes,
 } from "./Purchasing.reducer";
-import { AnimateOut } from "../../styles/AnimateOut";
 import { useMutation } from "@apollo/react-hooks";
 import { GameMutations } from "../../graphql/mutations";
+import { TradingButtonWrapper } from "./TradingButton.styles";
 
 export const TradingButton = () => {
     const [active, setActive] = useState(false);
@@ -60,23 +60,30 @@ export const TradingButton = () => {
 
     return (
         <>
-            <AnimateOut active={active && !state.tradingWith}>
-                <div>Who do you want to trade with?</div>
-                <Button onClick={setTradingUser(MERCHANT_TRADER_ID)}>
-                    The merchant
+            <TradingButtonWrapper>
+                {active && !state.tradingWith && (
+                    <>
+                        <div>Who do you want to trade with?</div>
+                        <Button onClick={setTradingUser(MERCHANT_TRADER_ID)}>
+                            The merchant
+                        </Button>
+                        {otherRegistrations.map(({ _id, player }) => (
+                            <Button
+                                key={player._id}
+                                onClick={setTradingUser(_id)}
+                            >
+                                {player.name}
+                            </Button>
+                        ))}
+                    </>
+                )}
+                <Button onClick={toggleActive}>
+                    {active ? "Cancel trade" : "Trade resources"}
                 </Button>
-                {otherRegistrations.map(({ _id, player }) => (
-                    <Button key={player._id} onClick={setTradingUser(_id)}>
-                        {player.name}
-                    </Button>
-                ))}
-            </AnimateOut>
-            <Button onClick={toggleActive}>
-                {active ? "Cancel trade" : "Trade resources"}
-            </Button>
-            {state.tradingWith && (
-                <Button onClick={finaliseTrade}>Propose trade terms</Button>
-            )}
+                {state.tradingWith && (
+                    <Button onClick={finaliseTrade}>Propose trade terms</Button>
+                )}
+            </TradingButtonWrapper>
         </>
     );
 };

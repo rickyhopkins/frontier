@@ -1,0 +1,12 @@
+---
+generates:
+  ./src/generated-models.ts:
+    config:
+      contextType: "@graphql-modules/core#ModuleContext"
+    plugins:
+      - typescript
+      - typescript-resolvers
+overwrite: true
+require:
+  - ts-node/register/transpile-only
+schema: ./src/schema.ts
