@@ -32,6 +32,7 @@ export const fullGameSchema = `
             _id
             fromRegistration
             toRegistration
+            outcome
             tradeValues {
                 wood
                 stone

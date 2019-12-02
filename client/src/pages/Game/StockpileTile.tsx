@@ -15,6 +15,7 @@ import {
 import { PurchasingContext } from "./Purchasing";
 import { css, cx } from "linaria";
 import { motion } from "framer-motion";
+import { useMemo } from "react";
 
 interface IProps {
     resource: Resources;
@@ -46,8 +47,16 @@ const DisabledTile = css`
     opacity: 0.5;
 `;
 
-export const StockpileTile = ({ resource, value, isCurrentUser }: IProps) => {
+export const StockpileTile = ({
+    resource,
+    value,
+    isCurrentUser,
+    isMerchant,
+}: IProps) => {
     const { state, dispatch } = useRequiredContext(PurchasingContext);
+
+    const tradingValue =
+        !isMerchant && state.tradingWith === MERCHANT_TRADER_ID ? 4 : 1;
 
     const iconSrc = (() => {
         switch (resource) {
@@ -69,16 +78,36 @@ export const StockpileTile = ({ resource, value, isCurrentUser }: IProps) => {
         dispatch({
             type: PurchasingActionTypes.ADD_TO_TRADE,
             resource,
-            amount: isCurrentUser ? -1 : 1,
+            amount: isCurrentUser ? -tradingValue : tradingValue,
         });
     };
 
-    const resourceCount =
-        value + (state.trade[resource] || 0) * (isCurrentUser ? 1 : -1);
+    const resourceCount = useMemo<number>(() => {
+        if (isMerchant) {
+            if ((state.trade[resource] || 0) < 0) return 0;
+            return Object.values(state.trade).reduce<number>(
+                (count, tradeValue) => {
+                    if (!tradeValue) return count;
+                    if (tradeValue < 0) {
+                        return count + Math.abs(tradeValue) / 4;
+                    }
+                    return count - tradeValue;
+                },
+                0
+            );
+        }
+        return value + (state.trade[resource] || 0) * (isCurrentUser ? 1 : -1);
+    }, [isCurrentUser, isMerchant, value, resource, state.trade]);
 
-    const disabled =
-        state.tradingWith &&
-        resourceCount < (state.tradingWith === MERCHANT_TRADER_ID ? 4 : 1);
+    const disabled = useMemo(() => {
+        if (isMerchant) {
+            return resourceCount <= 0;
+        }
+        return (
+            state.tradingWith &&
+            resourceCount < (state.tradingWith === MERCHANT_TRADER_ID ? 4 : 1)
+        );
+    }, [state.tradingWith, resourceCount, isMerchant]);
 
     return (
         <Tile

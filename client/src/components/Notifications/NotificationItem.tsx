@@ -18,7 +18,6 @@ const Item = styled.li`
     display: grid;
     grid-template-columns: 2rem 1fr 1fr 2rem;
     grid-gap: 1rem;
-    align-items: center;
     text-align: center;
 `;
 
@@ -35,9 +34,19 @@ interface IProps {
 export const NotificationItem = ({ trade }: IProps) => {
     const { game } = useRequiredContext(GameContext);
     const [acceptTrade] = useMutation(GameMutations.ACCEPT_TRADE);
+    const [rejectTrade] = useMutation(GameMutations.REJECT_TRADE);
 
-    const onmAcceptClick = () => {
+    const onAcceptClick = () => {
         acceptTrade({
+            variables: {
+                code: game.code,
+                tradeId: trade._id,
+            },
+        });
+    };
+
+    const onRejectClick = () => {
+        rejectTrade({
             variables: {
                 code: game.code,
                 tradeId: trade._id,
@@ -60,7 +69,7 @@ export const NotificationItem = ({ trade }: IProps) => {
 
     const mapResource = (resource: Resources) => {
         return (
-            <div>
+            <div key={resource}>
                 {Math.abs(trade.tradeValues[resource])} {resource}
             </div>
         );
@@ -69,7 +78,10 @@ export const NotificationItem = ({ trade }: IProps) => {
     return (
         <Item>
             <ItemTitle>Trade from {fromRegistration.player.name}</ItemTitle>
-            <SmallButton>
+            <SmallButton
+                style={{ alignSelf: "center" }}
+                onClick={onRejectClick}
+            >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -88,7 +100,10 @@ export const NotificationItem = ({ trade }: IProps) => {
                 <p>You get</p>
                 {toMe.map(mapResource)}
             </div>
-            <SmallButton onClick={onmAcceptClick}>
+            <SmallButton
+                onClick={onAcceptClick}
+                style={{ alignSelf: "center" }}
+            >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"

@@ -6,6 +6,7 @@ import { styled } from "linaria/react";
 import { TradingButton } from "./TradingButton";
 import {
     IPurchasingState,
+    MERCHANT_TRADER_ID,
     PurchasingReducer,
     PurchsingActions,
 } from "./Purchasing.reducer";
@@ -74,6 +75,9 @@ export const Purchasing = () => {
                     ))}
                     {tradersRegistration && (
                         <Stockpile stockpile={tradersRegistration.stockpile} />
+                    )}
+                    {state.tradingWith === MERCHANT_TRADER_ID && (
+                        <Stockpile isMerchant />
                     )}
                 </StockpileWrapper>
                 <TradingButton />

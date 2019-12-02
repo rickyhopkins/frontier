@@ -36,4 +36,9 @@ export const GameMutations = {
             acceptTrade(code: $code, tradeId: $tradeId)
         }
     `,
+    REJECT_TRADE: gql`
+        mutation rejectTrade($code: String!, $tradeId: ID!) {
+            rejectTrade(code: $code, tradeId: $tradeId)
+        }
+    `,
 };

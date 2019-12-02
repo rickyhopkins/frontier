@@ -10,6 +10,10 @@ export interface IGame extends Document {
     trades: ITrade[];
     nextStage(): IGame;
     acceptTrade(tradeId: string, accept: boolean): IGame;
+    merchantTrade(
+        fromRegistrationId: string,
+        tradeValues: ITrade["tradeValues"]
+    ): IGame;
 }
 
 export const gameSchema = new Schema({
@@ -64,6 +68,35 @@ gameSchema.methods.nextStage = async function() {
                 { new: true }
             );
     }
+    return this;
+};
+
+gameSchema.methods.merchantTrade = async function(
+    fromRegistrationId,
+    tradeValues
+) {
+    const fromRegistration = this.registrations.find(({ _id }) =>
+        _id.equals(fromRegistrationId)
+    );
+
+    const enoughResources = Object.entries(tradeValues).every(
+        ([resource, value]: [string, number]) => {
+            if (value < 0) {
+                return fromRegistration.stockpile[resource] >= Math.abs(value);
+            }
+            return true;
+        }
+    );
+
+    if (enoughResources) {
+        Object.entries(tradeValues).forEach(
+            ([resource, value]: [string, number]) => {
+                fromRegistration.stockpile[resource] += value;
+            }
+        );
+    }
+
+    await this.save();
     return this;
 };
 

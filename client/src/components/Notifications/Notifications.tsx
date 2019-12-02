@@ -48,8 +48,10 @@ export const Notifications = () => {
     );
 
     const filteredTrades = trades.filter(
-        ({ toRegistration }) =>
-            myRegistration && toRegistration === myRegistration._id
+        ({ toRegistration, outcome }) =>
+            myRegistration &&
+            toRegistration === myRegistration._id &&
+            outcome === "pending"
     );
 
     const currentVariant =

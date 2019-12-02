@@ -20,14 +20,14 @@ export const TradingButton = () => {
     const { state, dispatch } = useRequiredContext(PurchasingContext);
     const [proposeTradeMutation] = useMutation(GameMutations.PROPOSE_TRADE);
 
-    const finaliseTrade = () => {
+    const finaliseTrade = async () => {
         const myRegistration = game.registrations.find(
             ({ player }) => player._id === user._id
         );
 
         if (!myRegistration) return;
 
-        proposeTradeMutation({
+        const res = await proposeTradeMutation({
             variables: {
                 code: game.code,
                 trade: {
@@ -37,6 +37,12 @@ export const TradingButton = () => {
                 },
             },
         });
+
+        if (res.data.proposeTrade) {
+            dispatch({
+                type: PurchasingActionTypes.SET_TRADING_WITH,
+            });
+        }
     };
 
     const setTradingUser = (tradingWith: string) => () => {
@@ -59,31 +65,26 @@ export const TradingButton = () => {
     };
 
     return (
-        <>
-            <TradingButtonWrapper>
-                {active && !state.tradingWith && (
-                    <>
-                        <div>Who do you want to trade with?</div>
-                        <Button onClick={setTradingUser(MERCHANT_TRADER_ID)}>
-                            The merchant
+        <TradingButtonWrapper>
+            {active && !state.tradingWith && (
+                <>
+                    <div>Who do you want to trade with?</div>
+                    <Button onClick={setTradingUser(MERCHANT_TRADER_ID)}>
+                        The merchant
+                    </Button>
+                    {otherRegistrations.map(({ _id, player }) => (
+                        <Button key={player._id} onClick={setTradingUser(_id)}>
+                            {player.name}
                         </Button>
-                        {otherRegistrations.map(({ _id, player }) => (
-                            <Button
-                                key={player._id}
-                                onClick={setTradingUser(_id)}
-                            >
-                                {player.name}
-                            </Button>
-                        ))}
-                    </>
-                )}
-                <Button onClick={toggleActive}>
-                    {active ? "Cancel trade" : "Trade resources"}
-                </Button>
-                {state.tradingWith && (
-                    <Button onClick={finaliseTrade}>Propose trade terms</Button>
-                )}
-            </TradingButtonWrapper>
-        </>
+                    ))}
+                </>
+            )}
+            <Button onClick={toggleActive}>
+                {active ? "Cancel trade" : "Trade resources"}
+            </Button>
+            {state.tradingWith && (
+                <Button onClick={finaliseTrade}>Propose trade terms</Button>
+            )}
+        </TradingButtonWrapper>
     );
 };

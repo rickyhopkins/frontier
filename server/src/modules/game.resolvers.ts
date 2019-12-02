@@ -148,6 +148,14 @@ export default {
         },
         async proposeTrade(parent, args, { injector }, { session }) {
             const { code, trade } = args;
+            if (trade.toRegistrationId === "MERCHANT") {
+                const game = await Game.findOne({ code: args.code });
+                game.merchantTrade(trade.fromRegistrationId, trade.values);
+
+                await publish(game, injector);
+
+                return true;
+            }
             const game = await Game.findOneAndUpdate(
                 { code: code },
                 {
@@ -170,6 +178,15 @@ export default {
             const game = await Game.findOne({ code: args.code });
 
             const updatedGame = await game.acceptTrade(args.tradeId, true);
+
+            await publish(updatedGame, injector);
+
+            return true;
+        },
+        async rejectTrade(parent, args, { injector }) {
+            const game = await Game.findOne({ code: args.code });
+
+            const updatedGame = await game.acceptTrade(args.tradeId, false);
 
             await publish(updatedGame, injector);
 

@@ -9,16 +9,22 @@ interface IProps {
     isMerchant?: boolean;
 }
 
-export const Stockpile = ({ stockpile, isCurrentUser, isMerchant }: IProps) => {
+interface IMerchantProps {
+    isMerchant: true;
+}
+
+export const Stockpile = (props: IProps | IMerchantProps) => {
     return (
         <>
             {Object.values(Resources).map((resource: Resources) => (
                 <StockpileTile
                     key={resource}
                     resource={resource}
-                    value={stockpile[resource]}
-                    isCurrentUser={isCurrentUser}
-                    isMerchant={isMerchant}
+                    value={props.isMerchant ? 0 : props.stockpile[resource]}
+                    isCurrentUser={
+                        props.isMerchant ? false : props.isCurrentUser
+                    }
+                    isMerchant={props.isMerchant}
                 />
             ))}
         </>

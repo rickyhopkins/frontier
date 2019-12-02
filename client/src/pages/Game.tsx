@@ -41,6 +41,7 @@ export interface ITrade {
     _id: string;
     fromRegistration: string;
     toRegistration: string;
+    outcome: string;
     tradeValues: ITiles;
 }
 
