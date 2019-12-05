@@ -26,4 +26,8 @@ export const SmallStyledButton = css`
     font-size: 0.75rem;
 `;
 
-export const OutlineButton = css``;
+export const OutlineStyledButton = css`
+    color: gray;
+    border: 1px solid #505050;
+    background-color: transparent;
+`;

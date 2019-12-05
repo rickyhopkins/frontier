@@ -58,9 +58,21 @@ type Tiles {
     iron: Int
 }
 
+type ShoppingCart {
+    soldier: Int
+    horseman: Int
+    cannon: Int
+    ship: Int
+    settler: Int
+    city: Int
+    road: Int
+    wall: Int
+}
+
 type Registration {
     _id: ID!
     player: Player
     tiles: Tiles
     stockpile: Tiles
+    shoppingCart: ShoppingCart
 }

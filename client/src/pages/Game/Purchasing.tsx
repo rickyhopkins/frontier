@@ -12,9 +12,10 @@ import {
 } from "./Purchasing.reducer";
 import { Stockpile } from "./Stockpile";
 import { AuthenticationContext } from "../../contexts/AuthenticationWrapper";
-import { Resources } from "../../@types/frontier";
+import { Resources, Units } from "../../@types/frontier";
 import { css, cx } from "linaria";
 import { TradingTile } from "./TradingTile";
+import { UnitTile } from "./UnitTile";
 
 const PurchasingWrapper = styled.div`
     display: flex;
@@ -60,6 +61,7 @@ export const Purchasing = () => {
     return (
         <PurchasingContext.Provider value={{ state, dispatch }}>
             <PurchasingWrapper>
+                <h3>Resources available</h3>
                 <StockpileWrapper
                     className={cx(state.tradingWith && TradingWrapper)}
                 >
@@ -81,6 +83,12 @@ export const Purchasing = () => {
                     )}
                 </StockpileWrapper>
                 <TradingButton />
+                <h3>Shopping cart</h3>
+                <div>
+                    {Object.values(Units).map(unit => (
+                        <UnitTile key={unit} unit={unit} />
+                    ))}
+                </div>
             </PurchasingWrapper>
         </PurchasingContext.Provider>
     );

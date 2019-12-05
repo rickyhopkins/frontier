@@ -5,3 +5,14 @@ export enum Resources {
     WHEAT = "wheat",
     IRON = "iron",
 }
+
+export enum Units {
+    SOLDIER = "soldier",
+    HORSEMAN = "horseman",
+    CANNON = "cannon",
+    SHIP = "ship",
+    SETTLER = "settler",
+    CITY = "city",
+    ROAD = "road",
+    WALL = "wall",
+}

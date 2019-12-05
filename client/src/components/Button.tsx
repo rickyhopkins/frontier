@@ -1,6 +1,10 @@
 import * as React from "react";
 import { FC } from "react";
-import { SmallStyledButton, StyledButton } from "./Button.styles";
+import {
+    OutlineStyledButton,
+    SmallStyledButton,
+    StyledButton,
+} from "./Button.styles";
 import { Theme } from "../styles/Theme";
 import { transparentize } from "polished";
 import { cx } from "linaria";
@@ -36,4 +40,13 @@ export const Button: FC<IProps> = ({ disabled, ...props }) => {
 
 export const SmallButton: FC<IProps> = ({ className, ...props }) => {
     return <Button {...props} className={cx(SmallStyledButton, className)} />;
+};
+
+export const OutlineButton: FC<IProps> = ({ className, ...props }) => {
+    return (
+        <StyledButton
+            {...props}
+            className={cx(OutlineStyledButton, className)}
+        />
+    );
 };

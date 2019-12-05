@@ -88,7 +88,15 @@ gameSchema.methods.merchantTrade = async function(
         }
     );
 
-    if (enoughResources) {
+    const isBalanced =
+        Object.values(tradeValues).reduce<number>((balance, value: number) => {
+            if (value < 0) {
+                return balance + value / 4;
+            }
+            return balance + value;
+        }, 0) === 0;
+
+    if (enoughResources && isBalanced) {
         Object.entries(tradeValues).forEach(
             ([resource, value]: [string, number]) => {
                 fromRegistration.stockpile[resource] += value;

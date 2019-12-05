@@ -27,6 +27,16 @@ export const fullGameSchema = `
                 wheat
                 iron
 		    }
+		    shoppingCart {
+                soldier
+                horseman
+                cannon
+                ship
+                settler
+                city
+                road
+                wall
+		    }
 		}
         trades {
             _id

@@ -10,21 +10,12 @@ import { ContextMenu } from "./Game/ContextMenu";
 import { GameActions } from "./Game/GameActions";
 import { styled } from "linaria/react";
 import { Purchasing } from "./Game/Purchasing";
-import { Resources } from "../@types/frontier";
+import { Resources, Units } from "../@types/frontier";
 import { Notifications } from "../components/Notifications/Notifications";
 
 export type ITiles = Record<Resources, number>;
 
-interface IShoppingCart {
-    soldier: number;
-    horseman: number;
-    cannon: number;
-    ship: number;
-    settler: number;
-    city: number;
-    road: number;
-    wall: number;
-}
+export type IShoppingCart = Record<Units, number>;
 
 export interface IRegistration {
     _id: string;
@@ -56,7 +47,7 @@ interface IGame {
 
 const GameLayout = styled.div`
     display: grid;
-    grid-template-rows: 5rem 1fr;
+    grid-template-rows: 3rem 1fr;
     justify-items: center;
 `;
 

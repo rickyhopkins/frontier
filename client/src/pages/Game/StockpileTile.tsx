@@ -32,6 +32,7 @@ const Tile = styled(motion.div)`
     background-color: ${Theme.colors.contrast.background};
     margin: 0.25rem;
     border-radius: 4px;
+    user-select: none;
 
     span {
         color: #fff;
@@ -54,9 +55,17 @@ export const StockpileTile = ({
     isMerchant,
 }: IProps) => {
     const { state, dispatch } = useRequiredContext(PurchasingContext);
+    const tradeValueForThisResource = state.trade[resource] || 0;
 
-    const tradingValue =
-        !isMerchant && state.tradingWith === MERCHANT_TRADER_ID ? 4 : 1;
+    const tradingValue = useMemo<number>(() => {
+        if (isMerchant) {
+            return tradeValueForThisResource < 0 ? 4 : 1;
+        } else if (state.tradingWith === MERCHANT_TRADER_ID) {
+            return tradeValueForThisResource <= 0 ? 4 : 1;
+        } else {
+            return 1;
+        }
+    }, [isMerchant, state.tradingWith, tradeValueForThisResource]);
 
     const iconSrc = (() => {
         switch (resource) {
@@ -84,7 +93,8 @@ export const StockpileTile = ({
 
     const resourceCount = useMemo<number>(() => {
         if (isMerchant) {
-            if ((state.trade[resource] || 0) < 0) return 0;
+            if (tradeValueForThisResource < 0)
+                return Math.abs(tradeValueForThisResource);
             return Object.values(state.trade).reduce<number>(
                 (count, tradeValue) => {
                     if (!tradeValue) return count;
@@ -96,8 +106,14 @@ export const StockpileTile = ({
                 0
             );
         }
-        return value + (state.trade[resource] || 0) * (isCurrentUser ? 1 : -1);
-    }, [isCurrentUser, isMerchant, value, resource, state.trade]);
+        return value + tradeValueForThisResource * (isCurrentUser ? 1 : -1);
+    }, [
+        isCurrentUser,
+        isMerchant,
+        value,
+        state.trade,
+        tradeValueForThisResource,
+    ]);
 
     const disabled = useMemo(() => {
         if (isMerchant) {

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { Button } from "../../components/Button";
+import { Button, OutlineButton } from "../../components/Button";
 import { useRequiredContext } from "../../hooks/useRequiredContext";
 import { GameContext } from "../Game";
 import { AuthenticationContext } from "../../contexts/AuthenticationWrapper";
@@ -19,6 +19,16 @@ export const TradingButton = () => {
     const { user } = useRequiredContext(AuthenticationContext);
     const { state, dispatch } = useRequiredContext(PurchasingContext);
     const [proposeTradeMutation] = useMutation(GameMutations.PROPOSE_TRADE);
+
+    const isBalanced =
+        state.tradingWith !== MERCHANT_TRADER_ID ||
+        Object.values(state.trade).reduce<number>((balance, value) => {
+            if (!value) return balance;
+            if (value < 0) {
+                return balance + value / 4;
+            }
+            return balance + value;
+        }, 0) === 0;
 
     const finaliseTrade = async () => {
         const myRegistration = game.registrations.find(
@@ -42,6 +52,7 @@ export const TradingButton = () => {
             dispatch({
                 type: PurchasingActionTypes.SET_TRADING_WITH,
             });
+            setActive(false);
         }
     };
 
@@ -69,21 +80,26 @@ export const TradingButton = () => {
             {active && !state.tradingWith && (
                 <>
                     <div>Who do you want to trade with?</div>
-                    <Button onClick={setTradingUser(MERCHANT_TRADER_ID)}>
+                    <OutlineButton onClick={setTradingUser(MERCHANT_TRADER_ID)}>
                         The merchant
-                    </Button>
+                    </OutlineButton>
                     {otherRegistrations.map(({ _id, player }) => (
-                        <Button key={player._id} onClick={setTradingUser(_id)}>
+                        <OutlineButton
+                            key={player._id}
+                            onClick={setTradingUser(_id)}
+                        >
                             {player.name}
-                        </Button>
+                        </OutlineButton>
                     ))}
                 </>
             )}
-            <Button onClick={toggleActive}>
+            <OutlineButton onClick={toggleActive}>
                 {active ? "Cancel trade" : "Trade resources"}
-            </Button>
+            </OutlineButton>
             {state.tradingWith && (
-                <Button onClick={finaliseTrade}>Propose trade terms</Button>
+                <Button onClick={finaliseTrade} disabled={!isBalanced}>
+                    Propose trade terms
+                </Button>
             )}
         </TradingButtonWrapper>
     );
