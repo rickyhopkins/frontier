@@ -17,6 +17,8 @@ extend type Mutation {
     proposeTrade(code: String!, trade: TradeInput!): Boolean
     acceptTrade(code: String!, tradeId: ID!): Boolean
     rejectTrade(code: String!, tradeId: ID!): Boolean
+    buyUnit(code: String!, registrationId: ID!, unit: String!): Boolean
+    sellUnit(code: String!, registrationId: ID!, unit: String!): Boolean
 }
 
 input TilesInput {

@@ -2,6 +2,8 @@ import { Document, model, Schema } from "mongoose";
 import { IRegistration, registrationSchema } from "./registrationSchema";
 import { IPlayer } from "./playerSchema";
 import { ITrade, tradeSchema } from "./tradeSchema";
+import { IUnits, UnitConsts } from "./unitsSchema";
+import { UserInputError } from "apollo-server";
 
 export interface IGame extends Document {
     owner: IPlayer;
@@ -11,6 +13,14 @@ export interface IGame extends Document {
     nextStage(): IGame;
     acceptTrade(tradeId: string, accept: boolean): IGame;
     merchantTrade(
+        fromRegistrationId: string,
+        tradeValues: ITrade["tradeValues"]
+    ): IGame;
+    buyUnit(
+        fromRegistrationId: string,
+        tradeValues: ITrade["tradeValues"]
+    ): IGame;
+    sellUnit(
         fromRegistrationId: string,
         tradeValues: ITrade["tradeValues"]
     ): IGame;
@@ -147,6 +157,56 @@ gameSchema.methods.acceptTrade = async function(
             }
         );
     }
+
+    await this.save();
+    return this;
+};
+
+gameSchema.methods.buyUnit = async function(
+    registrationId: string,
+    unit: keyof IUnits
+) {
+    const registration = this.registrations.find(({ _id }) =>
+        _id.equals(registrationId)
+    );
+    const unitCost = UnitConsts[unit];
+    const enoughResources = Object.entries(unitCost).every(
+        ([resource, value]: [string, number]) =>
+            registration.stockpile[resource] >= value
+    );
+
+    if (!enoughResources) {
+        throw new UserInputError(
+            `You do not have enough resources to buy a ${unit}`
+        );
+    }
+
+    registration.shoppingCart[unit] += 1;
+    Object.entries(unitCost).forEach(
+        ([resource, value]) => (registration.stockpile[resource] -= value)
+    );
+
+    await this.save();
+    return this;
+};
+
+gameSchema.methods.sellUnit = async function(
+    registrationId: string,
+    unit: keyof IUnits
+) {
+    const registration = this.registrations.find(({ _id }) =>
+        _id.equals(registrationId)
+    );
+    const unitCost = UnitConsts[unit];
+
+    if (registration.shoppingCart[unit] <= 0) {
+        throw new UserInputError(`You do not have a ${unit} to sell`);
+    }
+
+    registration.shoppingCart[unit] -= 1;
+    Object.entries(unitCost).forEach(
+        ([resource, value]) => (registration.stockpile[resource] += value)
+    );
 
     await this.save();
     return this;

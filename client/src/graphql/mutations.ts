@@ -41,4 +41,18 @@ export const GameMutations = {
             rejectTrade(code: $code, tradeId: $tradeId)
         }
     `,
+    BUY_UNIT: gql`
+        mutation buyUnit($code: String!, $registrationId: ID!, $unit: String!) {
+            buyUnit(code: $code, registrationId: $registrationId, unit: $unit)
+        }
+    `,
+    SELL_UNIT: gql`
+        mutation sellUnit(
+            $code: String!
+            $registrationId: ID!
+            $unit: String!
+        ) {
+            sellUnit(code: $code, registrationId: $registrationId, unit: $unit)
+        }
+    `,
 };

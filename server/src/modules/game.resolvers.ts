@@ -9,7 +9,7 @@ const GAME_ADDED = "GAME_ADDED";
 const GAME_UPDATED = "GAME_UPDATED";
 
 const randomString = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const chars = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789";
 
     const charsLength = chars.length;
 
@@ -187,6 +187,30 @@ export default {
             const game = await Game.findOne({ code: args.code });
 
             const updatedGame = await game.acceptTrade(args.tradeId, false);
+
+            await publish(updatedGame, injector);
+
+            return true;
+        },
+        async buyUnit(parent, args, { injector }) {
+            const game = await Game.findOne({ code: args.code });
+
+            const updatedGame = await game.buyUnit(
+                args.registrationId,
+                args.unit
+            );
+
+            await publish(updatedGame, injector);
+
+            return true;
+        },
+        async sellUnit(parent, args, { injector }) {
+            const game = await Game.findOne({ code: args.code });
+
+            const updatedGame = await game.sellUnit(
+                args.registrationId,
+                args.unit
+            );
 
             await publish(updatedGame, injector);
 

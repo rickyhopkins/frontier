@@ -28,6 +28,11 @@ const StockpileWrapper = styled.div`
     grid-template-columns: repeat(5, 1fr);
 `;
 
+const UnitWrapper = styled.div`
+    display: grid;
+    grid-gap: 1rem;
+`;
+
 const TradingWrapper = css`
     grid-auto-flow: column;
     grid-template-columns: repeat(3, 1fr);
@@ -84,11 +89,11 @@ export const Purchasing = () => {
                 </StockpileWrapper>
                 <TradingButton />
                 <h3>Shopping cart</h3>
-                <div>
+                <UnitWrapper>
                     {Object.values(Units).map(unit => (
                         <UnitTile key={unit} unit={unit} />
                     ))}
-                </div>
+                </UnitWrapper>
             </PurchasingWrapper>
         </PurchasingContext.Provider>
     );
