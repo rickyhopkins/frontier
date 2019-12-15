@@ -1,10 +1,13 @@
 import * as React from "react";
-import { createContext, useState } from "react";
+import { createContext } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { useQuery, useSubscription } from "@apollo/react-hooks";
 import { GAME_UPDATED } from "../graphql/game-updated";
 import { FIND_GAME } from "../graphql/find-game";
-import { IUser } from "../contexts/AuthenticationWrapper";
+import {
+    AuthenticationContext,
+    IUser,
+} from "../contexts/AuthenticationWrapper";
 import { Registrations } from "./Game/Registrations";
 import { ContextMenu } from "./Game/ContextMenu";
 import { GameActions } from "./Game/GameActions";
@@ -12,6 +15,7 @@ import { styled } from "linaria/react";
 import { Purchasing } from "./Game/Purchasing";
 import { Resources, Units } from "../@types/frontier";
 import { Notifications } from "../components/Notifications/Notifications";
+import { useRequiredContext } from "../hooks/useRequiredContext";
 
 export type ITiles = Record<Resources, number>;
 
@@ -26,6 +30,7 @@ export interface IRegistration {
     tiles: ITiles;
     stockpile: ITiles;
     shoppingCart: IShoppingCart;
+    active: boolean;
 }
 
 export interface ITrade {
@@ -57,36 +62,30 @@ const GameContent = styled.div`
     margin-bottom: 2rem;
 `;
 
-export const GameContext = createContext<{ game: IGame } | undefined>(
-    undefined
-);
+export const GameContext = createContext<
+    { game: IGame; registration?: IRegistration } | undefined
+>(undefined);
 
 export const Game = ({ match }: RouteComponentProps<{ gameCode: string }>) => {
-    const [game, setGame] = useState<IGame | undefined>();
-
-    const updateGame = (data: any) => {
-        if ("game" in data) {
-            setGame(data.game);
-        }
-        if ("subscriptionData" in data) {
-            setGame(data.subscriptionData.data.gameUpdated);
-        }
-    };
-
-    useQuery(FIND_GAME, {
+    const { user } = useRequiredContext(AuthenticationContext);
+    const { data, loading } = useQuery<{ game: IGame }>(FIND_GAME, {
         variables: { code: match.params.gameCode },
-        onCompleted: updateGame,
     });
 
     useSubscription(GAME_UPDATED, {
         variables: { code: match.params.gameCode },
-        onSubscriptionData: updateGame,
     });
 
-    if (!game) return <div>loading</div>;
+    if (loading || !data) return <div>loading</div>;
+
+    const { game } = data;
+
+    const registration = game.registrations.find(
+        ({ player }) => player._id === user._id
+    );
 
     return (
-        <GameContext.Provider value={{ game }}>
+        <GameContext.Provider value={{ game, registration }}>
             <GameLayout>
                 <ContextMenu />
                 <GameContent>

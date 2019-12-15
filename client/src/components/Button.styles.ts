@@ -9,7 +9,6 @@ export const StyledButton = styled(motion.button)`
     display: inline-block;
 
     cursor: pointer;
-    width: inherit;
     border-radius: 0.2rem;
     padding: 0.5rem 1rem;
     letter-spacing: 0.2rem;
@@ -18,6 +17,10 @@ export const StyledButton = styled(motion.button)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    &:disabled {
+        opacity: 0.1;
+    }
 `;
 
 export const SmallStyledButton = css`
@@ -30,4 +33,12 @@ export const OutlineStyledButton = css`
     color: gray;
     border: 1px solid #505050;
     background-color: transparent;
+`;
+
+export const TertiaryStyledButton = css`
+    background-color: transparent;
+    padding: 0.5rem;
+    height: 2rem;
+    font-size: 1rem;
+    line-height: 1rem;
 `;

@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Document, Schema } from "mongoose";
 import { IUnits, unitsSchema } from "./unitsSchema";
 import { IPlayer } from "./playerSchema";
 
@@ -15,6 +15,7 @@ export interface IRegistration {
     stockpile: ITiles;
     shoppingCart: IUnits;
     player: IPlayer;
+    active: boolean;
 }
 
 const minNumber = { type: Number, min: 0 };
@@ -35,4 +36,5 @@ export const registrationSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Player",
     },
+    active: Boolean,
 });

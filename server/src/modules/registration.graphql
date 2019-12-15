@@ -1,0 +1,18 @@
+extend type Query {
+    registration(id: String!): Registration
+}
+
+extend type Mutation {
+    buyUnit(registrationId: ID!, unit: String!): Registration
+    sellUnit(registrationId: ID!, unit: String!): Registration
+    endTurn(): Registration
+}
+
+type Registration {
+    _id: ID!
+    player: Player
+    tiles: Tiles
+    stockpile: Tiles
+    shoppingCart: ShoppingCart
+    active: Boolean
+}

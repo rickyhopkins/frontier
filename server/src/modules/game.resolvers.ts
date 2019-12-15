@@ -47,6 +47,7 @@ const basicRegistration: Omit<IRegistration, "player"> = {
         road: 0,
         wall: 0,
     },
+    active: true,
 };
 
 const saveAndPublish = (game: IGame, injector: any) => {
@@ -86,14 +87,12 @@ export default {
     },
     Mutation: {
         async createGame(parent, args, { injector }, { session }) {
-            const game = await Game.create({
+            return Game.create({
                 ...args,
                 owner: session.user,
                 code: randomString(),
                 registrations: [{ player: session.user, ...basicRegistration }],
             });
-            injector.get(PubSub).publish(GAME_ADDED, { gameAdded: game });
-            return game;
         },
         async register(parent, args, { injector }, { session }) {
             const game = await Game.findOne({ code: args.code });
@@ -187,30 +186,6 @@ export default {
             const game = await Game.findOne({ code: args.code });
 
             const updatedGame = await game.acceptTrade(args.tradeId, false);
-
-            await publish(updatedGame, injector);
-
-            return true;
-        },
-        async buyUnit(parent, args, { injector }) {
-            const game = await Game.findOne({ code: args.code });
-
-            const updatedGame = await game.buyUnit(
-                args.registrationId,
-                args.unit
-            );
-
-            await publish(updatedGame, injector);
-
-            return true;
-        },
-        async sellUnit(parent, args, { injector }) {
-            const game = await Game.findOne({ code: args.code });
-
-            const updatedGame = await game.sellUnit(
-                args.registrationId,
-                args.unit
-            );
 
             await publish(updatedGame, injector);
 

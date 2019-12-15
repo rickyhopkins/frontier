@@ -1,4 +1,4 @@
-extend type Subscription {
+type Subscription {
     gameAdded: Game
     gameUpdated(code: String!): Game!
 }
@@ -17,8 +17,6 @@ extend type Mutation {
     proposeTrade(code: String!, trade: TradeInput!): Boolean
     acceptTrade(code: String!, tradeId: ID!): Boolean
     rejectTrade(code: String!, tradeId: ID!): Boolean
-    buyUnit(code: String!, registrationId: ID!, unit: String!): Boolean
-    sellUnit(code: String!, registrationId: ID!, unit: String!): Boolean
 }
 
 input TilesInput {
@@ -69,12 +67,4 @@ type ShoppingCart {
     city: Int
     road: Int
     wall: Int
-}
-
-type Registration {
-    _id: ID!
-    player: Player
-    tiles: Tiles
-    stockpile: Tiles
-    shoppingCart: ShoppingCart
 }

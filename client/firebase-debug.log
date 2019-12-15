@@ -1,0 +1,65 @@
+[debug] [2019-12-15T01:42:07.079Z] ----------------------------------------------------------------------
+[debug] [2019-12-15T01:42:07.081Z] Command:       C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2019-12-15T01:42:07.081Z] CLI Version:   7.2.1
+[debug] [2019-12-15T01:42:07.081Z] Platform:      win32
+[debug] [2019-12-15T01:42:07.081Z] Node Version:  v12.7.0
+[debug] [2019-12-15T01:42:07.087Z] Time:          Sun Dec 15 2019 14:42:07 GMT+1300 (New Zealand Daylight Time)
+[debug] [2019-12-15T01:42:07.087Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-12-15T01:42:07.111Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-12-15T01:42:07.111Z] > authorizing via signed-in user
+[debug] [2019-12-15T01:42:07.111Z] [iam] checking project frontier-e6b34 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2019-12-15T01:42:07.112Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2019-12-15T01:42:07.112Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2019-12-15T01:42:07.457Z] <<< HTTP RESPONSE 200
+[debug] [2019-12-15T01:42:07.473Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/frontier-e6b34:testIamPermissions  
+
+[debug] [2019-12-15T01:42:08.941Z] <<< HTTP RESPONSE 200
+[debug] [2019-12-15T01:42:08.945Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/frontier-e6b34  
+ 
+[debug] [2019-12-15T01:42:09.517Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'frontier-e6b34'...
+[info] 
+[info] i  deploying hosting
+[debug] [2019-12-15T01:42:09.539Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/frontier-e6b34/versions  
+
+[debug] [2019-12-15T01:42:12.014Z] <<< HTTP RESPONSE 200
+[info] i  hosting[frontier-e6b34]: beginning deploy...
+[info] i  hosting[frontier-e6b34]: found 20 files in build
+[debug] [2019-12-15T01:42:12.041Z] [hosting] hash cache [YnVpbGQ] load error: lines is not defined
+[debug] [2019-12-15T01:42:12.302Z] [hosting] hash cache [YnVpbGQ] stored for 20 files
+[debug] [2019-12-15T01:42:12.302Z] [hosting][hash queue][FINAL]
+[debug] [2019-12-15T01:42:12.302Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/frontier-e6b34/versions/d200d7fe5eb118f5:populateFiles  
+ <request body omitted>
+[debug] [2019-12-15T01:42:14.389Z] <<< HTTP RESPONSE 200
+[debug] [2019-12-15T01:42:14.390Z] [hosting][populate queue][FINAL]
+[debug] [2019-12-15T01:42:14.390Z] [hosting] uploads queued: 0
+[debug] [2019-12-15T01:42:14.390Z] [hosting][upload queue][FINAL]
+[info] +  hosting[frontier-e6b34]: file upload complete
+[debug] [2019-12-15T01:42:14.391Z] [hosting] deploy completed after 2376ms
+[debug] [2019-12-15T01:42:14.680Z] [
+  {
+    "config": {
+      "public": "build",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "site": "frontier-e6b34"
+    },
+    "site": "frontier-e6b34",
+    "version": "sites/frontier-e6b34/versions/d200d7fe5eb118f5"
+  }
+]
+[info] i  hosting[frontier-e6b34]: finalizing version...
+[debug] [2019-12-15T01:42:14.683Z] >>> HTTP REQUEST PATCH https://firebasehosting.googleapis.com/v1beta1/sites/frontier-e6b34/versions/d200d7fe5eb118f5?updateMask=status  
+

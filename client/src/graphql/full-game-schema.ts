@@ -1,3 +1,5 @@
+import { fullRegistrationSchema } from "./full-registration-schema";
+
 export const fullGameSchema = `
 	{
 		_id
@@ -8,35 +10,7 @@ export const fullGameSchema = `
 		    name
 		}
 		registrations {
-		    _id
-		    player {
-		        _id
-		        name
-		    }
-		    tiles {
-                wood
-                stone
-                livestock
-                wheat
-                iron
-		    }
-		    stockpile {
-                wood
-                stone
-                livestock
-                wheat
-                iron
-		    }
-		    shoppingCart {
-                soldier
-                horseman
-                cannon
-                ship
-                settler
-                city
-                road
-                wall
-		    }
+            ${fullRegistrationSchema}
 		}
         trades {
             _id

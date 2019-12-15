@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import { fullRegistrationSchema } from "./full-registration-schema";
 
 export const GameMutations = {
     REGISTER: gql`
@@ -42,17 +43,17 @@ export const GameMutations = {
         }
     `,
     BUY_UNIT: gql`
-        mutation buyUnit($code: String!, $registrationId: ID!, $unit: String!) {
-            buyUnit(code: $code, registrationId: $registrationId, unit: $unit)
+        mutation buyUnit($registrationId: ID!, $unit: String!) {
+            buyUnit(registrationId: $registrationId, unit: $unit) {
+                ${fullRegistrationSchema}
+            }
         }
     `,
     SELL_UNIT: gql`
-        mutation sellUnit(
-            $code: String!
-            $registrationId: ID!
-            $unit: String!
-        ) {
-            sellUnit(code: $code, registrationId: $registrationId, unit: $unit)
+        mutation sellUnit($registrationId: ID!, $unit: String!) {
+            sellUnit(registrationId: $registrationId, unit: $unit) {
+                ${fullRegistrationSchema}
+            }
         }
     `,
 };

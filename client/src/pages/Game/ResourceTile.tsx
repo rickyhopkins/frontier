@@ -13,11 +13,11 @@ import { GameContext, IRegistration } from "../Game";
 import { useTimeout } from "../../hooks/useTimeout";
 import { useRequiredContext } from "../../hooks/useRequiredContext";
 import { Resources } from "../../@types/frontier";
+import { TertiaryButton } from "../../components/Button";
 
 const StyledTile = styled.div`
     display: grid;
     grid-template-columns: 3rem 1fr 2rem 1fr;
-    gap: 0.5rem;
     justify-content: space-between;
     align-items: center;
     border-radius: 4px;
@@ -62,7 +62,7 @@ export const ResourceTile = ({ resourceType, registration }: IProps) => {
     }, [registration, getTileCount, start]);
 
     const addResource = (value = 1) => {
-        if (getTileCount() + value < 0) return;
+        if (tileCount.current + localCount + value < 0) return;
         if (isActive) {
             stop();
         }
@@ -96,11 +96,16 @@ export const ResourceTile = ({ resourceType, registration }: IProps) => {
     return (
         <StyledTile>
             <img src={iconSrc} alt={resourceType} />
-            <div onClick={() => addResource(-1)}>-</div>
+            <TertiaryButton
+                onClick={() => addResource(-1)}
+                disabled={tileCount.current + localCount < 1}
+            >
+                -
+            </TertiaryButton>
             <div style={{ textAlign: "center" }}>
                 {tileCount.current + localCount}
             </div>
-            <div onClick={() => addResource()}>+</div>
+            <TertiaryButton onClick={() => addResource()}>+</TertiaryButton>
         </StyledTile>
     );
 };

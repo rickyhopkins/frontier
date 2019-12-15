@@ -61,16 +61,15 @@ export const Logo = styled.img`
 export const AppLayout = styled.div`
     display: grid;
     grid-template-columns: 1rem 1fr 1rem;
-    grid-template-rows: 5rem 1fr 10rem;
+    grid-template-rows: 5rem 1fr;
     grid-template-areas:
         ". logo ."
-        ". content ."
-        ". footer .";
+        ". content .";
     min-height: 100vh;
     justify-content: center;
     align-items: center;
     @media only screen and (min-width: 500px) {
-        grid-template-rows: 10rem 1fr 10rem;
+        grid-template-rows: 10rem 1fr;
     }
 `;
 

@@ -4,6 +4,7 @@ import {
     OutlineStyledButton,
     SmallStyledButton,
     StyledButton,
+    TertiaryStyledButton,
 } from "./Button.styles";
 import { Theme } from "../styles/Theme";
 import { transparentize } from "polished";
@@ -47,6 +48,15 @@ export const OutlineButton: FC<IProps> = ({ className, ...props }) => {
         <StyledButton
             {...props}
             className={cx(OutlineStyledButton, className)}
+        />
+    );
+};
+
+export const TertiaryButton: FC<IProps> = ({ className, ...props }) => {
+    return (
+        <StyledButton
+            {...props}
+            className={cx(TertiaryStyledButton, className)}
         />
     );
 };
