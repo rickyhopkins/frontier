@@ -104,7 +104,10 @@ export const AdminButton = () => {
         },
     });
 
-    if (game.owner._id !== user._id || (registration && registration.active)) {
+    if (
+        game.owner._id !== user._id ||
+        (game.stage !== "open" && registration && registration.active)
+    ) {
         return null;
     }
 
