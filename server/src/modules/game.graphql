@@ -1,5 +1,4 @@
-type Subscription {
-    gameAdded: Game
+extend type Subscription {
     gameUpdated(code: String!): Game!
 }
 
@@ -11,9 +10,7 @@ extend type Query {
 
 extend type Mutation {
     createGame: Game
-    nextStage(code: String!): Boolean
-    register(code: String!): Boolean
-    addResource(code: String!, registrationId: ID!, resource: String!, value: Int!): Boolean
+    nextStage(code: String!): Game
     proposeTrade(code: String!, trade: TradeInput!): Boolean
     acceptTrade(code: String!, tradeId: ID!): Boolean
     rejectTrade(code: String!, tradeId: ID!): Boolean

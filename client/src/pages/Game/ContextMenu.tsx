@@ -21,7 +21,7 @@ export const ContextMenu = () => {
                     </>
                 );
             case "tiles":
-                return "Resources per turn";
+                return "Assign tiles";
             case "turns":
                 return user.name;
         }

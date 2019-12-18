@@ -158,12 +158,17 @@ export const UnitTile = ({ unit }: IProps) => {
             <UnitImg src={unitSrc} alt={unit} />
             <TertiaryButton
                 onClick={onSellClick}
-                disabled={registration.shoppingCart[unit] < 1}
+                disabled={
+                    !registration.active || registration.shoppingCart[unit] < 1
+                }
             >
                 -
             </TertiaryButton>
             <div>{registration.shoppingCart[unit]}</div>
-            <TertiaryButton onClick={onBuyClick} disabled={!enoughResources}>
+            <TertiaryButton
+                onClick={onBuyClick}
+                disabled={!registration.active || !enoughResources}
+            >
                 +
             </TertiaryButton>
         </UnitWrapper>

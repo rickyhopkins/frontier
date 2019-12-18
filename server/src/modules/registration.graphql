@@ -1,16 +1,23 @@
+type Subscription {
+    registrationUpdated(gameId: String!): Registration!
+}
+
 extend type Query {
     registration(id: String!): Registration
 }
 
 extend type Mutation {
+    register(code: String!): Registration
+    addResource(registrationId: ID!, resource: String!, value: Int!): Registration
     buyUnit(registrationId: ID!, unit: String!): Registration
     sellUnit(registrationId: ID!, unit: String!): Registration
-    endTurn(): Registration
+    endTurn: Registration
 }
 
 type Registration {
     _id: ID!
     player: Player
+    game: Game
     tiles: Tiles
     stockpile: Tiles
     shoppingCart: ShoppingCart

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { styled } from "linaria/react";
 import iron from "../../assets/images/iron.png";
 import livestock from "../../assets/images/livestock.png";
@@ -10,10 +9,10 @@ import { Theme } from "../../styles/Theme";
 import { useMutation } from "@apollo/react-hooks";
 import { GameMutations } from "../../graphql/mutations";
 import { GameContext, IRegistration } from "../Game";
-import { useTimeout } from "../../hooks/useTimeout";
 import { useRequiredContext } from "../../hooks/useRequiredContext";
 import { Resources } from "../../@types/frontier";
 import { TertiaryButton } from "../../components/Button";
+import { AuthenticationContext } from "../../contexts/AuthenticationWrapper";
 
 const StyledTile = styled.div`
     display: grid;
@@ -38,41 +37,31 @@ interface IProps {
 
 export const ResourceTile = ({ resourceType, registration }: IProps) => {
     const {
-        game: { code, stage },
+        game: { owner },
     } = useRequiredContext(GameContext);
-    const getTileCount = useCallback(
-        () =>
-            registration[stage === "turns" ? "stockpile" : "tiles"][
-                resourceType as Resources
-            ] || 0,
-        [registration, resourceType, stage]
-    );
-    const tileCount = useRef(getTileCount());
-    const [localCount, setLocalCount] = useState(0);
+    const { user } = useRequiredContext(AuthenticationContext);
     const [addResourceMutation] = useMutation(GameMutations.ADD_RESOURCE);
-    const { start, stop, isActive } = useTimeout(() => {
-        setLocalCount(0);
-        tileCount.current = getTileCount();
-    }, 1000);
 
-    useLayoutEffect(() => {
-        if (getTileCount() !== tileCount.current) {
-            start();
-        }
-    }, [registration, getTileCount, start]);
+    const tileCount = registration.tiles[resourceType];
+    const isOwner = user._id === owner._id;
 
     const addResource = (value = 1) => {
-        if (tileCount.current + localCount + value < 0) return;
-        if (isActive) {
-            stop();
-        }
-        setLocalCount(oldCount => oldCount + value);
         addResourceMutation({
             variables: {
-                code,
                 registrationId: registration._id,
                 resource: resourceType,
                 value,
+            },
+            optimisticResponse: {
+                __typename: "Mutation",
+                addResource: {
+                    ...registration,
+                    tiles: {
+                        ...registration.tiles,
+                        [resourceType]:
+                            registration.tiles[resourceType] + value,
+                    },
+                },
             },
         });
     };
@@ -98,14 +87,14 @@ export const ResourceTile = ({ resourceType, registration }: IProps) => {
             <img src={iconSrc} alt={resourceType} />
             <TertiaryButton
                 onClick={() => addResource(-1)}
-                disabled={tileCount.current + localCount < 1}
+                disabled={!isOwner || tileCount < 1}
             >
                 -
             </TertiaryButton>
-            <div style={{ textAlign: "center" }}>
-                {tileCount.current + localCount}
-            </div>
-            <TertiaryButton onClick={() => addResource()}>+</TertiaryButton>
+            <div style={{ textAlign: "center" }}>{tileCount}</div>
+            <TertiaryButton onClick={() => addResource()} disabled={!isOwner}>
+                +
+            </TertiaryButton>
         </StyledTile>
     );
 };

@@ -1,30 +1,33 @@
 import gql from "graphql-tag";
 import { fullRegistrationSchema } from "./full-registration-schema";
+import { fullGameSchema } from "./full-game-schema";
 
 export const GameMutations = {
     REGISTER: gql`
         mutation register($code: String!) {
-            register(code: $code)
+            register(code: $code) {
+                _id
+            }
         }
     `,
     NEXT_STAGE: gql`
         mutation nextStage($code: String!) {
-            nextStage(code: $code)
+            nextStage(code: $code) ${fullGameSchema}
         }
     `,
     ADD_RESOURCE: gql`
         mutation addResource(
-            $code: String!
             $registrationId: ID!
             $resource: String!
             $value: Int!
         ) {
             addResource(
-                code: $code
                 registrationId: $registrationId
                 resource: $resource
                 value: $value
-            )
+            ) {
+                ${fullRegistrationSchema}
+            }
         }
     `,
     PROPOSE_TRADE: gql`
@@ -52,6 +55,13 @@ export const GameMutations = {
     SELL_UNIT: gql`
         mutation sellUnit($registrationId: ID!, $unit: String!) {
             sellUnit(registrationId: $registrationId, unit: $unit) {
+                ${fullRegistrationSchema}
+            }
+        }
+    `,
+    END_TURN: gql`
+        mutation endTurn {
+            endTurn {
                 ${fullRegistrationSchema}
             }
         }

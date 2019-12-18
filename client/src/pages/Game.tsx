@@ -16,6 +16,7 @@ import { Purchasing } from "./Game/Purchasing";
 import { Resources, Units } from "../@types/frontier";
 import { Notifications } from "../components/Notifications/Notifications";
 import { useRequiredContext } from "../hooks/useRequiredContext";
+import { REGISTRATION_UPDATED } from "../graphql/registration-updated";
 
 export type ITiles = Record<Resources, number>;
 
@@ -41,7 +42,7 @@ export interface ITrade {
     tradeValues: ITiles;
 }
 
-interface IGame {
+export interface IGame {
     _id: string;
     owner: IUser;
     code: string;
@@ -54,6 +55,7 @@ const GameLayout = styled.div`
     display: grid;
     grid-template-rows: 3rem 1fr;
     justify-items: center;
+    min-height: 100%;
 `;
 
 const GameContent = styled.div`
@@ -68,12 +70,28 @@ export const GameContext = createContext<
 
 export const Game = ({ match }: RouteComponentProps<{ gameCode: string }>) => {
     const { user } = useRequiredContext(AuthenticationContext);
-    const { data, loading } = useQuery<{ game: IGame }>(FIND_GAME, {
+    const { data, loading, refetch } = useQuery<{ game: IGame }>(FIND_GAME, {
         variables: { code: match.params.gameCode },
     });
 
     useSubscription(GAME_UPDATED, {
         variables: { code: match.params.gameCode },
+    });
+
+    useSubscription(REGISTRATION_UPDATED, {
+        variables: { gameId: data ? data.game._id : "" },
+        onSubscriptionData: options => {
+            if (!data || !data.game) return;
+            if (
+                data.game.registrations.every(
+                    ({ _id }) =>
+                        _id !==
+                        options.subscriptionData.data.registrationUpdated._id
+                )
+            ) {
+                refetch();
+            }
+        },
     });
 
     if (loading || !data) return <div>loading</div>;
@@ -88,10 +106,12 @@ export const Game = ({ match }: RouteComponentProps<{ gameCode: string }>) => {
         <GameContext.Provider value={{ game, registration }}>
             <GameLayout>
                 <ContextMenu />
-                <GameContent>
-                    <Purchasing />
-                    <Registrations />
-                </GameContent>
+                <div>
+                    <GameContent>
+                        <Purchasing />
+                        <Registrations />
+                    </GameContent>
+                </div>
                 <GameActions />
             </GameLayout>
             <Notifications />

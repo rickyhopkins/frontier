@@ -8,6 +8,7 @@ import { GameMutations } from "../../graphql/mutations";
 import { styled } from "linaria/react";
 import { Theme } from "../../styles/Theme";
 import { TurnButton } from "./TurnButton";
+import { AdminButton } from "./buttons/AdminButton";
 
 const GameActionsWrapper = styled.div`
     position: sticky;
@@ -27,17 +28,10 @@ export const GameActions = () => {
     const [register] = useMutation(GameMutations.REGISTER, {
         variables: { code: game.code },
     });
-    const [nextStage] = useMutation(GameMutations.NEXT_STAGE, {
-        variables: { code: game.code },
-    });
 
     const canRegister =
         game.registrations.length < 6 &&
         !game.registrations.some(({ player }) => player._id === user._id);
-
-    const isOwner = game.owner._id === user._id;
-
-    const canStart = game.registrations.length > 1;
 
     return (
         <GameActionsWrapper>
@@ -45,11 +39,7 @@ export const GameActions = () => {
                 <Button onClick={() => register()}>Join game</Button>
             )}
             <TurnButton />
-            {isOwner && (
-                <Button onClick={() => nextStage()} disabled={!canStart}>
-                    {canStart ? "Start game" : "Waiting for one more player"}
-                </Button>
-            )}
+            <AdminButton />
         </GameActionsWrapper>
     );
 };

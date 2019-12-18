@@ -1,4 +1,3 @@
-import { Schema } from "mongoose";
 import { ITiles } from "./registrationSchema";
 
 export interface IUnits {
@@ -11,17 +10,6 @@ export interface IUnits {
     road: Number;
     wall: Number;
 }
-
-export const unitsSchema = new Schema({
-    soldier: Number,
-    horseman: Number,
-    cannon: Number,
-    ship: Number,
-    settler: Number,
-    city: Number,
-    road: Number,
-    wall: Number,
-});
 
 export const UnitConsts: Record<keyof IUnits, Partial<ITiles>> = {
     soldier: { wood: 1, livestock: 1, wheat: 2, iron: 1 },

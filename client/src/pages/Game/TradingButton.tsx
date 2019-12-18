@@ -15,7 +15,7 @@ import { TradingButtonWrapper } from "./TradingButton.styles";
 
 export const TradingButton = () => {
     const [active, setActive] = useState(false);
-    const { game } = useRequiredContext(GameContext);
+    const { game, registration } = useRequiredContext(GameContext);
     const { user } = useRequiredContext(AuthenticationContext);
     const { state, dispatch } = useRequiredContext(PurchasingContext);
     const [proposeTradeMutation] = useMutation(GameMutations.PROPOSE_TRADE);
@@ -31,18 +31,14 @@ export const TradingButton = () => {
         }, 0) === 0;
 
     const finaliseTrade = async () => {
-        const myRegistration = game.registrations.find(
-            ({ player }) => player._id === user._id
-        );
-
-        if (!myRegistration) return;
+        if (!registration) return;
 
         const res = await proposeTradeMutation({
             variables: {
                 code: game.code,
                 trade: {
                     values: state.trade,
-                    fromRegistrationId: myRegistration._id,
+                    fromRegistrationId: registration._id,
                     toRegistrationId: state.tradingWith,
                 },
             },
@@ -93,7 +89,10 @@ export const TradingButton = () => {
                     ))}
                 </>
             )}
-            <OutlineButton onClick={toggleActive}>
+            <OutlineButton
+                onClick={toggleActive}
+                disabled={registration && !registration.active}
+            >
                 {active ? "Cancel trade" : "Trade resources"}
             </OutlineButton>
             {state.tradingWith && (

@@ -20,6 +20,7 @@ export const StyledButton = styled(motion.button)`
 
     &:disabled {
         opacity: 0.1;
+        cursor: default;
     }
 `;
 

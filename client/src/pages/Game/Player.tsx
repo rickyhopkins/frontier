@@ -22,6 +22,14 @@ const TileWrapper = styled(motion.div)`
     color: #fff;
 `;
 
+const PlayerName = styled.div`
+    padding: 1rem;
+    max-width: 10rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+`;
+
 export const Player = ({ registration, state }: IProps) => {
     const { game } = useRequiredContext(GameContext);
     const { player } = registration;
@@ -35,7 +43,7 @@ export const Player = ({ registration, state }: IProps) => {
                         : "transparent",
             }}
         >
-            <div style={{ padding: "1rem" }}>{player.name}</div>
+            <PlayerName>{player.name}</PlayerName>
             <AnimatePresence>
                 {game.stage !== "open" &&
                     Object.values(Resources).map(resource => (
