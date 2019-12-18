@@ -64,12 +64,10 @@ gameSchema.methods.acceptTrade = async function(
         return this;
     }
 
-    const fromRegistration = this.registrations.find(({ _id }) =>
-        _id.equals(trade.fromRegistration)
+    const fromRegistration = await Registration.findById(
+        trade.fromRegistration
     );
-    const toRegistration = this.registrations.find(({ _id }) =>
-        _id.equals(trade.toRegistration)
-    );
+    const toRegistration = await Registration.findById(trade.toRegistration);
 
     const enoughResources = Object.entries(trade.tradeValues.toJSON()).every(
         ([resource, value]: [string, number]) => {
@@ -90,6 +88,8 @@ gameSchema.methods.acceptTrade = async function(
                 toRegistration.stockpile[resource] -= value;
             }
         );
+        fromRegistration.save();
+        toRegistration.save();
     }
 
     await this.save();
