@@ -11,7 +11,7 @@ extend type Mutation {
     addResource(registrationId: ID!, resource: String!, value: Int!): Registration
     buyUnit(registrationId: ID!, unit: String!): Registration
     sellUnit(registrationId: ID!, unit: String!): Registration
-    endTurn: Registration
+    endTurn(gameId: ID!): Registration
 }
 
 type Registration {

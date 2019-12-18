@@ -94,6 +94,7 @@ export default {
         async endTurn(parent, args, { injector }, { session }) {
             const registration = await Registration.findOneAndUpdate(
                 {
+                    game: args.gameId,
                     player: session.user,
                 },
                 {

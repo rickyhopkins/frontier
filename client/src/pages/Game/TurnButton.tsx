@@ -8,10 +8,11 @@ import { GameMutations } from "../../graphql/mutations";
 export const TurnButton = () => {
     const {
         registration,
-        game: { stage },
+        game: { stage, _id },
     } = useRequiredContext(GameContext);
 
     const [endTurn] = useMutation(GameMutations.END_TURN, {
+        variables: { gameId: _id },
         optimisticResponse: {
             __typename: "Mutation",
             endTurn: {
@@ -20,6 +21,8 @@ export const TurnButton = () => {
             },
         },
     });
+
+    console.log(registration);
 
     if (!registration || !registration.active || stage !== "turns") return null;
 

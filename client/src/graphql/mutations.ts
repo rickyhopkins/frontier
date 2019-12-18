@@ -60,8 +60,8 @@ export const GameMutations = {
         }
     `,
     END_TURN: gql`
-        mutation endTurn {
-            endTurn {
+        mutation endTurn($gameId: ID!) {
+            endTurn(gameId: $gameId) {
                 ${fullRegistrationSchema}
             }
         }
