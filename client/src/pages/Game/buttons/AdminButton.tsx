@@ -106,7 +106,7 @@ export const AdminButton = () => {
 
     if (
         game.owner._id !== user._id ||
-        (game.stage !== "open" && registration && registration.active)
+        (game.stage === "turns" && registration && registration.active)
     ) {
         return null;
     }
