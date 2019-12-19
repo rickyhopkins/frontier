@@ -16,9 +16,7 @@ jobs:
         with:
           args: install
       - name: Build
-        uses: CultureHQ/actions-yarn@v1.0.1
-        with:
-          args: run build
+        run: npm run build
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
