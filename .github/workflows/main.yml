@@ -12,9 +12,13 @@ jobs:
       - name: Navigate to client
         run: cd client
       - name: Install Dependencies
-        run: npm ci
+        uses: CultureHQ/actions-yarn@v1.0.1
+        with:
+          args: install
       - name: Build
-        run: npm run build
+        uses: CultureHQ/actions-yarn@v1.0.1
+        with:
+          args: run build
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
