@@ -24,5 +24,6 @@ jobs:
         args: git:remote -a frontier-server
     - name: push
       run: |
+        git remote
         git remote show heroku
         git subtree push --prefix server heroku master
