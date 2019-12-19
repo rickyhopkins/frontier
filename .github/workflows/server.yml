@@ -6,7 +6,6 @@ on:
       - master
     paths:
       - server
-      - .github/workflows
 
 jobs:
   release:
