@@ -19,7 +19,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: dist
-          path: ./client/dist
+          path: ./client/build
   deploy:
     name: Deploy
     needs: build
