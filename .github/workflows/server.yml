@@ -25,5 +25,5 @@ jobs:
     - name: push
       run: |
         git remote
-        git remote show heroku
+        cat ~/.netrc
         git subtree push --prefix server heroku master
