@@ -7,20 +7,19 @@ jobs:
     name: Build Client
     runs-on: ubuntu-latest
     steps:
-      - working-directory: ./client
       - name: Checkout Repo
         uses: actions/checkout@master
       - name: Install Dependencies
-        uses: CultureHQ/actions-yarn@v1.0.1
-        with:
-          args: install
+        run: npm ci
+        working-directory: ./client
       - name: Build
         run: npm run build
+        working-directory: ./client
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
           name: dist
-          path: dist
+          path: ./client/dist
   deploy:
     name: Deploy
     needs: build
