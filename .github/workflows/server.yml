@@ -11,6 +11,4 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: push
-      run: |
-        git checkout master
-        git subtree push --prefix server https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/frontier-server.git master
+      run: git subtree push --prefix server https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/frontier-server.git master -f
