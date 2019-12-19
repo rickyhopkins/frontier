@@ -23,4 +23,4 @@ jobs:
       with:
         args: git:remote -a frontier-server
     - name: push
-      run: git subtree push --prefix server heroku master
+      run: git subtree push --prefix server https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/frontier-server.git master
