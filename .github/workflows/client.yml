@@ -1,6 +1,11 @@
 name: Client
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - client
 
 jobs:
   build:
