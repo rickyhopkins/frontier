@@ -10,11 +10,11 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@master
       - name: Install Dependencies
+        working-directory: ./client
         run: npm ci
-        working-directory: ./client
       - name: Build
-        run: npm run build
         working-directory: ./client
+        run: npm run build
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
