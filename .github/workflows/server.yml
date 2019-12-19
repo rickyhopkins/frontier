@@ -23,4 +23,6 @@ jobs:
       with:
         args: git:remote -a frontier-server
     - name: push
-      run: git subtree push --prefix server heroku master
+      run: |
+        git remote show heroku
+        git subtree push --prefix server heroku master
