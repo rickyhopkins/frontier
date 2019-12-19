@@ -10,5 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: login
+      uses: actions/heroku@master
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      with:
+        args: container:login
+    - name: set remote
+      uses: actions/heroku@master
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      with:
+        args: git:remote -a frontier-server
     - name: push
-      run: git subtree push --prefix server https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/frontier-server.git master -f
+      run: git subtree push --prefix server heroku master
