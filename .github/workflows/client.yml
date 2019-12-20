@@ -20,7 +20,7 @@ jobs:
         run: npm run build
         env:
           NODE_ENV: production
-          REACT_APP_GQL_URL: https://frontier-server.herokuapp.com/
+          REACT_APP_GQL_URL: frontier-server.herokuapp.com/
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
