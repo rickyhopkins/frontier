@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - client
 
 jobs:
   build:
@@ -20,6 +18,8 @@ jobs:
       - name: Build
         working-directory: ./client
         run: npm run build
+        env:
+          NODE_ENV: production
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
