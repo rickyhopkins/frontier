@@ -23,7 +23,7 @@
     "apollo-server": "^2.7.2",
     "graphql": "^14.4.2",
     "graphql-import-node": "0.0.4",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.6.6",
     "reflect-metadata": "^0.1.13"
   },
